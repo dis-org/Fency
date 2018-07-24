@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Player states-->
+    <integer name="INVALID">-1</integer>
+    <integer name="HIGH_STAND">0</integer>
+    <integer name="LOW_STAND">1</integer>
+    <integer name="HIGH_ATTACK">2</integer>
+    <integer name="LOW_ATTACK">3</integer>
+
+    <!--Game states-->
+    <integer name="GAME_DRAW">0</integer>
+    <integer name="GAME_P1">1</integer>
+    <integer name="GAME_P2">2</integer>
+</resources>

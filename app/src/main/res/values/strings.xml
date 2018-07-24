@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Fency</string>
+    <string name="title_activity_main">DetectMotion</string>
+    <string name="title_activity_home">Fency!</string>
+    <string name="title_activity_practice">Practice Mode</string>
+    <string name="btnDebug">debug mode</string>
+    <string name="mainLogo">fency</string>
+    <string name="fencyTitle">fency!</string>
+    <string name="fency_logo_des">fency!</string>
+    <string name="practice_btn_des">practice mode</string>
+    <string name="practicebtnText">- Practice</string>
+    <string name="duelbtnText">- Duel</string>
+    <!--Practice imperi-->
+    <string name="parryUp">Para in alto!</string>
+    <string name="parryDown">Para in basso!</string>
+    <string name="attackUp">Attacca in alto!</string>
+    <string name="attackDown">Attacca in basso!</string>
+    <!--Practice approbationes-->
+    <string name="success">Bravo</string>
+    <string name="failure">Riprova</string>
+
+</resources>
