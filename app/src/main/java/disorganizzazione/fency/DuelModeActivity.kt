@@ -1,6 +1,8 @@
 package disorganizzazione.fency
 
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.view.View
 import kotlinx.android.synthetic.main.activity_duel_mode.*
 
 class DuelModeActivity: FencyActivity(){
@@ -10,6 +12,8 @@ class DuelModeActivity: FencyActivity(){
         setContentView(R.layout.activity_duel_mode)
         cntFullScreen = fullscreen_content
         goFullScreen()
+
+        audioPlayerEffects = MediaPlayer.create(this, R.raw.sword_clash)
     }
 
 }
