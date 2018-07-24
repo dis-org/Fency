@@ -1,11 +1,14 @@
 package disorganizzazione.fency
 
+import android.media.MediaPlayer
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 
 abstract class FencyActivity : AppCompatActivity(){
 
-    protected var cntFullScreen: View? = null
+    protected abstract var cntFullScreen: View?
+    protected abstract var audioPlayerMusic: MediaPlayer?
+    protected abstract var audioPlayerEffects: MediaPlayer?
 
     protected fun goFullScreen(){
         cntFullScreen!!.systemUiVisibility = (View.SYSTEM_UI_FLAG_LOW_PROFILE
@@ -19,6 +22,12 @@ abstract class FencyActivity : AppCompatActivity(){
     override fun onResume() {
         super.onResume()
         goFullScreen()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        audioPlayerMusic?.release()
+        audioPlayerEffects?.release()
     }
 
 }
