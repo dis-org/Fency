@@ -27,6 +27,7 @@ abstract class FencyActivity : AppCompatActivity(){
     override fun onPause() {
         super.onPause()
         audioPlayerMusic?.release()
+
     }
 
 }
