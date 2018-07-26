@@ -3,7 +3,6 @@ package disorganizzazione.fency
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : FencyActivity() {
@@ -17,7 +16,7 @@ class HomeActivity : FencyActivity() {
         btnDuel.setOnClickListener {
             audioPlayerEffects!!.start()
             audioPlayerEffects!!.setOnCompletionListener {
-                audioPlayerEffects!!.setOnCompletionListener { null }
+                audioPlayerEffects!!.setOnCompletionListener(null)
                 audioPlayerEffects!!.release()
             }
             startActivity(Intent(this, DuelModeActivity::class.java))

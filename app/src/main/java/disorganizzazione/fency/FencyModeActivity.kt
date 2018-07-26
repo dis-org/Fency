@@ -16,6 +16,9 @@ abstract class FencyModeActivity: FencyActivity() {
 
     protected var sensorHandler: SensorHandler? = null
 
+    protected var userAttacking = false
+    protected var opponentAttacking = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
