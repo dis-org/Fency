@@ -24,7 +24,7 @@ class PracticeModeActivity: FencyModeActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_practice_mode)
-        cntFullScreen = findViewById(R.id.container_practice)
+        cntFullScreen = fullscreen_content
         runnable = Runnable { approbatio!!.text = "" }
         audioPlayerMusic = MediaPlayer.create(this, R.raw.approve_01) //TODO
         discipuli = ivPlayerState
@@ -97,14 +97,14 @@ class PracticeModeActivity: FencyModeActivity() {
 
         if (usor!!.state == arbiter!!.toImperium()) {
             approbatio!!.setText(R.string.success)
-            audioPlayerMusic!!.start()
+            audioPlayerMusic?.start()
             arbiter!!.step(true)
         } else {
             approbatio!!.setText(R.string.failure)
             arbiter!!.step(false)
         }
         //update combo TextView
-        sequentia!!.text = "" + arbiter!!.combo
+        sequentia!!.text = arbiter!!.combo.toString()
         sequentia!!.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in))
 
         //clear the approbatio label with a delay
