@@ -97,7 +97,7 @@ class PracticeModeActivity: FencyModeActivity() {
 
         if (usor!!.state == arbiter!!.toImperium()) {
             approbatio!!.setText(R.string.success)
-            audioPlayerMusic!!.start()
+            audioPlayerMusic?.start()
             arbiter!!.step(true)
         } else {
             approbatio!!.setText(R.string.failure)

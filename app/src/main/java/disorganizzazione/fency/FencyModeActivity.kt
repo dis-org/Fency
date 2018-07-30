@@ -40,21 +40,23 @@ abstract class FencyModeActivity: FencyActivity() {
 
     override fun onResume() {
         super.onResume()
-
         sensorHandler!!.registerListeners()
-
+        //audioPlayerMusic = null
         audioPlayerEffects = MediaPlayer.create(this, R.raw.sword_clash)
     }
 
      override fun onPause() {
         super.onPause()
+        sensorHandler!!.unregisterListeners()
         audioPlayerMusic?.release()
         audioPlayerEffects?.release()
     }
 
     override fun onStop() {
-        super.onStop()
+        audioPlayerMusic = null
+        audioPlayerEffects = null
         finish()
+        super.onStop()
     }
 
     override fun onBackPressed() {
@@ -65,8 +67,10 @@ abstract class FencyModeActivity: FencyActivity() {
     abstract fun updatePlayerView(caller: Player)
 
     open fun updateGameView(gameState: Int) {
-        if (gameState == R.integer.GAME_DRAW) vibrate()
-
+        if (gameState == R.integer.GAME_DRAW) {
+            vibrate()
+            audioPlayerEffects?.start()
+        }
     }
 
     private fun vibrate(){
