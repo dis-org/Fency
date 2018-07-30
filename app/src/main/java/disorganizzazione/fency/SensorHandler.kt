@@ -77,16 +77,16 @@ class SensorHandler(context: FencyModeActivity, player: Player) : FencyHandler(c
 
             if (roll > sogliaRoll || roll < -sogliaRoll) {
                 //("Invalid")
-                player.changeState(R.integer.INVALID)
+                player.state = R.integer.INVALID
             } else if (pitch > pitch_upbound && pitch < pitch_midbound) {
                 //("High Guard")
-                player.changeState(R.integer.HIGH_STAND)
+                player.state = R.integer.HIGH_STAND
             } else if (pitch >= pitch_midbound && pitch < pitch_lowbound) {
                 //("Low Guard")
-                player.changeState(R.integer.LOW_STAND)
+                player.state = R.integer.LOW_STAND
             } else {
                 //("Invalid")
-                player.changeState(R.integer.INVALID)
+                player.state = R.integer.INVALID
             }
 
             if (start) {
@@ -121,9 +121,9 @@ class SensorHandler(context: FencyModeActivity, player: Player) : FencyHandler(c
                                     peak + yCurrent < 0 && event.timestamp - startingAttackTime > attackMinLength) {
                                 //AFFONDO!
                                 if (player.state == R.integer.LOW_STAND)
-                                    player.changeState(R.integer.LOW_ATTACK)
+                                    player.state = R.integer.LOW_ATTACK
                                 else if (player.state == R.integer.HIGH_STAND)
-                                    player.changeState(R.integer.HIGH_ATTACK)
+                                    player.state = R.integer.HIGH_ATTACK
                             }
                             startingAttackTime = 0
                             peak = 0f

@@ -85,7 +85,7 @@ class PracticeModeActivity: FencyModeActivity() {
                     Handler().postDelayed({
                         // Allow opponent image and state change only after delay
                         opponentAttacking = false
-                        adversator!!.changeState(R.integer.HIGH_STAND)
+                        adversator!!.state = R.integer.HIGH_STAND
                     }, ATTACK_ANIMATION_DELAY)
                 }
             }

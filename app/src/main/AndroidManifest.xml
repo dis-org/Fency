@@ -20,6 +20,14 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".PracticeModeActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".DuelModeActivity"
             android:screenOrientation="portrait">
             <intent-filter>

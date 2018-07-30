@@ -7,9 +7,12 @@ import android.os.Vibrator
 
 abstract class FencyModeActivity: FencyActivity() {
 
-    protected var usor : Player? = null
-    protected var adversator : Player? = null
-    protected var ludum : Game? = null
+    var usor : Player? = null
+        protected set
+    var adversator : Player? = null
+        protected set
+    var ludum : Game? = null
+        protected set
 
     private val VIBRATION_LENGTH : Long = 100
     protected var vibrator : Vibrator? = null

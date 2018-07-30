@@ -1,21 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0099cc"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@mipmap/img_fency_mainmenubackground"
     tools:context=".HomeActivity"
     android:id="@+id/fullscreen_content">
+
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="165dp"
+        android:layout_gravity="top"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/logolayoutmargin"
+        android:layout_marginRight="@dimen/logolayoutmargin"
+        android:layout_marginTop="32dp"
+        android:contentDescription="@string/fency_logo_des"
+        app:srcCompat="@mipmap/img_fency_logo"/>
+
+    <TextView
+        android:id="@+id/btnPractice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivLogo"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:fontFamily="cursive"
+        android:text="@string/practicebtnText"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/brown_ink"
+        android:textSize="36sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/btnDuel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/btnPractice"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:fontFamily="cursive"
         android:text="@string/duelbtnText"
         android:textAlignment="center"
@@ -25,4 +57,4 @@
         android:textStyle="bold"
         android:visibility="visible" />
 
-</FrameLayout>
+</RelativeLayout>

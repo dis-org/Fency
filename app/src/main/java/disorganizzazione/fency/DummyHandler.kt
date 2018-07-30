@@ -30,7 +30,7 @@ class DummyHandler(context: PracticeModeActivity, player: Player) : FencyHandler
         (context as PracticeModeActivity).impera(toImperium())
 
         // Allow opponent state change only after delay
-        handler.postDelayed({player.changeState(toAction())}, waitingTime)
+        handler.postDelayed({player.state= toAction()}, waitingTime)
 
     }
 

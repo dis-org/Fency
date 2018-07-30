@@ -13,13 +13,23 @@ class HomeActivity : FencyActivity() {
         setContentView(R.layout.activity_home)
         cntFullScreen = fullscreen_content
 
+        btnPractice.setOnClickListener {
+            playAudioEffect()
+            startActivity(Intent(this, PracticeModeActivity::class.java))
+        }
+
         btnDuel.setOnClickListener {
-            audioPlayerEffects!!.start()
-            audioPlayerEffects!!.setOnCompletionListener {
-                audioPlayerEffects!!.setOnCompletionListener(null)
-                audioPlayerEffects!!.release()
-            }
+            playAudioEffect()
             startActivity(Intent(this, DuelModeActivity::class.java))
+        }
+
+    }
+
+    private fun playAudioEffect() {
+        audioPlayerEffects!!.start()
+        audioPlayerEffects!!.setOnCompletionListener {
+            audioPlayerEffects!!.setOnCompletionListener(null)
+            audioPlayerEffects!!.release()
         }
     }
 
