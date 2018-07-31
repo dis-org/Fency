@@ -1,8 +1,10 @@
 package disorganizzazione.fency
 
 import android.content.Intent
+import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.widget.CheckBox
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : FencyActivity() {
@@ -23,6 +25,14 @@ class HomeActivity : FencyActivity() {
             startActivity(Intent(this, DuelModeActivity::class.java))
         }
 
+        audioBox.setOnClickListener {
+            if (audioBox.isChecked) {
+                audioPlayerMusic?.start()
+            } else {
+                audioPlayerMusic?.pause()
+            }
+        }
+
     }
 
     private fun playAudioEffect() {
@@ -39,7 +49,8 @@ class HomeActivity : FencyActivity() {
         audioPlayerEffects = MediaPlayer.create(this, R.raw.turn_page)
         audioPlayerMusic = MediaPlayer.create(this, R.raw.menu_theme)
         audioPlayerMusic!!.isLooping = true
-        audioPlayerMusic!!.start()
+        if (audioBox.isChecked)
+            audioPlayerMusic!!.start()
     }
 
 }

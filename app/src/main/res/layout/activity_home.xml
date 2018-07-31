@@ -8,6 +8,21 @@
     tools:context=".HomeActivity"
     android:id="@+id/fullscreen_content">
 
+    <CheckBox
+        android:id="@+id/audioBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_centerHorizontal="false"
+        android:checked="true"
+        android:fontFamily="casual"
+        android:text="@string/music"
+        android:layout_gravity="top"
+        android:textAllCaps="false"
+        android:textColor="@color/brown_ink"
+        android:textSize="18sp"
+        tools:layout_editor_absoluteX="8dp" />
+
     <ImageView
         android:id="@+id/ivLogo"
         android:layout_width="wrap_content"

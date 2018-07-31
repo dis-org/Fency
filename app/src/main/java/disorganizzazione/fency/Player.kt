@@ -4,8 +4,6 @@ class Player(activity : FencyModeActivity) : FencyModel(activity, R.integer.HIGH
 
     override var state: Int = super.state
         set(to) {
-            if(to == field) return
-
             field = to
             activity.updatePlayerView(this)
 

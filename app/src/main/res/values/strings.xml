@@ -18,5 +18,6 @@
     <!--Practice approbationes-->
     <string name="success">Bravo</string>
     <string name="failure">Riprova</string>
+    <string name="music">music</string>
 
 </resources>
