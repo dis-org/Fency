@@ -3,7 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#00AA88</color>
-    <color name="opponent_filter">#ffff0000</color>
+    <color name="opponent_filter">#d73535</color>
     <color name="black_overlay">#66000000</color>
-    <color name="brown_ink">#dc110901</color>
+    <color name="brown_ink">#f3110901</color>
 </resources>

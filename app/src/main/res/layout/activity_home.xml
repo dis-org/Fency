@@ -36,10 +36,28 @@
         app:srcCompat="@mipmap/img_fency_logo"/>
 
     <TextView
-        android:id="@+id/btnPractice"
+        android:id="@+id/btnTutorial"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivLogo"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:fontFamily="cursive"
+        android:text="- Tutorial"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/brown_ink"
+        android:textSize="36sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/btnPractice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnTutorial"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:layout_marginLeft="@dimen/activity_vertical_margin"
