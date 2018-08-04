@@ -121,6 +121,8 @@ class TutorialModeActivity: FencyModeActivity() {
                 adve_icon!!.alpha = adve_active_alpha
                 state_tv!!.alpha = usor_active_alpha
 
+                // Allow adversator change state only if necessary
+                // This makes the device vibrate just once
                 if (new_adve_state != adversator!!.state){
                     adversator!!.state = new_adve_state
                 }

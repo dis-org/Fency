@@ -8,8 +8,17 @@
     <string name="fencyTitle">fency!</string>
     <string name="fency_logo_des">fency!</string>
     <string name="practice_btn_des">practice mode</string>
+    <string name="tutorialbtnText">- Tutorial</string>
     <string name="practicebtnText">- Practice</string>
     <string name="duelbtnText">- Duel</string>
+    <!--Tutorial-->
+    <string name="tutorialTitle">come si gioca</string>
+    <string name="tipGuard">Inclina il dispositivo per cambiare la posizione di guardia</string>
+    <string name="tipAttack">Esegui un affondo per colpire l\'avversario dove è scoperto</string>
+    <string name="textHighGuard">guardia alta</string>
+    <string name="textLowGuard">guardia bassa</string>
+    <string name="textHighAttack">attacco alto</string>
+    <string name="textLowAttack">attacco basso</string>
     <!--Practice imperi-->
     <string name="parryUp">Para in alto!</string>
     <string name="parryDown">Para in basso!</string>

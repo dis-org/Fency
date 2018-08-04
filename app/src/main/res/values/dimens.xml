@@ -3,4 +3,9 @@
     <dimen name="logo_height">230dp</dimen>
     <dimen name="logolayoutmargin">32dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="tutorial_image_size">96dp</dimen>
+    <dimen name="tutorial_guard_margin">28dp</dimen>
+    <dimen name="tutorial_attack_margin">20dp</dimen>
+    <dimen name="tutorial_label_margin">32dp</dimen>
 </resources>

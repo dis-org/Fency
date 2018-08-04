@@ -33,8 +33,10 @@ class HomeActivity : FencyActivity() {
         audioBox.setOnClickListener {
             if (audioBox.isChecked) {
                 audioPlayerMusic?.start()
+                audioBox.setTextColor(Color.BLACK)
             } else {
                 audioPlayerMusic?.pause()
+                audioBox.setTextColor(Color.WHITE)
             }
         }
 
