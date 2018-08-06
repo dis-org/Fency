@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fullscreen_content"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/img_fency_mainmenubackground"
+    android:weightSum="15"
+    tools:context="disorganizzazione.fency.TutorialModeActivity">
+
+    <TextView
+        android:id="@+id/tv_tutorial_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:fontFamily="casual"
+        android:gravity="center_horizontal"
+        android:singleLine="true"
+        android:text="@string/tutorialTitle"
+        android:textAllCaps="true"
+        android:textColor="@color/black_overlay"
+        android:textSize="36sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tv_tutorial_tip_guard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:layout_weight="2"
+        android:fontFamily="casual"
+        android:gravity="center_horizontal"
+        android:text="@string/tipGuard"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/brown_ink"
+        android:textSize="24sp" />
+
+    <LinearLayout
+        android:id="@+id/lay_tutorial_guard_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/underline_high_guard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/tutorial_label_margin"
+            android:layout_weight="1"
+            android:fontFamily="casual"
+            android:gravity="start"
+            android:text="@string/textHighGuard"
+            android:textAlignment="gravity"
+            android:textAllCaps="true"
+            android:textColor="@color/brown_ink"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/underline_low_guard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/tutorial_label_margin"
+            android:layout_weight="1"
+            android:fontFamily="casual"
+            android:gravity="end"
+            android:text="@string/textLowGuard"
+            android:textAlignment="gravity"
+            android:textAllCaps="true"
+            android:textColor="@color/brown_ink"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lay_tutorial_guard_iv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:orientation="horizontal"
+        android:padding="4dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/iv_tutorial_player_high_stand"
+                android:layout_width="@dimen/tutorial_image_size"
+                android:layout_height="@dimen/tutorial_image_size"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:alpha="0.5"
+                app:srcCompat="@mipmap/fency_high_stand" />
+
+            <ImageView
+                android:id="@+id/iv_tutorial_opponent_high_attack"
+                android:layout_width="@dimen/tutorial_image_size"
+                android:layout_height="@dimen/tutorial_image_size"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/tutorial_guard_margin"
+                android:alpha="0.3"
+                android:scaleX="-1"
+                android:tint="@color/opponent_filter"
+                app:srcCompat="@mipmap/fency_high_attack" />
+
+            <ImageView
+                android:id="@+id/iv_tutorial_player_low_stand"
+                android:layout_width="@dimen/tutorial_image_size"
+                android:layout_height="@dimen/tutorial_image_size"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/tutorial_guard_margin"
+                android:alpha="0.5"
+                app:srcCompat="@mipmap/fency_low_stand" />
+
+            <ImageView
+                android:id="@+id/iv_tutorial_opponent_low_attack"
+                android:layout_width="@dimen/tutorial_image_size"
+                android:layout_height="@dimen/tutorial_image_size"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:alpha="0.3"
+                android:scaleX="-1"
+                android:tint="@color/opponent_filter"
+                app:srcCompat="@mipmap/fency_low_attack" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_tutorial_invalid"
+        android:layout_width="@dimen/tutorial_image_size"
+        android:layout_height="@dimen/tutorial_image_size"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="2"
+        app:srcCompat="@mipmap/img_fency_tutorial_middle" />
+
+    <LinearLayout
+        android:id="@+id/lay_tutorial_attack_iv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/iv_tutorial_player_high_attack"
+                android:layout_width="@dimen/tutorial_image_size"
+                android:layout_height="@dimen/tutorial_image_size"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:alpha="0.5"
+                app:srcCompat="@mipmap/fency_high_attack" />
+
+            <ImageView
+                android:id="@+id/iv_tutorial_opponent_low_stand"
+                android:layout_width="@dimen/tutorial_image_size"
+                android:layout_height="@dimen/tutorial_image_size"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/tutorial_attack_margin"
+                android:alpha="0.3"
+                android:scaleX="-1"
+                android:tint="@color/opponent_filter"
+                app:srcCompat="@mipmap/fency_low_stand" />
+
+            <ImageView
+                android:id="@+id/iv_tutorial_player_low_attack"
+                android:layout_width="@dimen/tutorial_image_size"
+                android:layout_height="@dimen/tutorial_image_size"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:alpha="0.5"
+                android:layout_marginEnd="@dimen/tutorial_attack_margin"
+                app:srcCompat="@mipmap/fency_low_attack" />
+
+            <ImageView
+                android:id="@+id/iv_tutorial_opponent_high_stand"
+                android:layout_width="@dimen/tutorial_image_size"
+                android:layout_height="@dimen/tutorial_image_size"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:alpha="0.3"
+                android:scaleX="-1"
+                android:tint="@color/opponent_filter"
+                app:srcCompat="@mipmap/fency_high_stand" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lay_tutorial_attack_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:orientation="horizontal"
+        android:padding="2dp">
+
+        <TextView
+            android:id="@+id/underline_high_attack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/tutorial_label_margin"
+            android:layout_weight="1"
+            android:fontFamily="casual"
+            android:gravity="start"
+            android:text="@string/textHighAttack"
+            android:textAlignment="gravity"
+            android:textAllCaps="true"
+            android:textColor="@color/brown_ink"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/underline_low_attack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/tutorial_label_margin"
+            android:layout_weight="1"
+            android:fontFamily="casual"
+            android:gravity="end"
+            android:text="@string/textLowAttack"
+            android:textAlignment="gravity"
+            android:textAllCaps="true"
+            android:textColor="@color/brown_ink"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_tutorial_tip_attack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:layout_weight="2"
+        android:fontFamily="casual"
+        android:gravity="center_horizontal"
+        android:text="@string/tipAttack"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/brown_ink"
+        android:textSize="24sp" />
+
+</LinearLayout>

@@ -1,10 +1,21 @@
 <resources>
     <string name="app_name">Fency</string>
     <string name="title_activity_home">Fency!</string>
-    <string name="mainLogo">fency</string>
-    <string name="fencyTitle">fency!</string>
+    <string name="mainLogo">Fency</string>
+    <string name="fencyTitle">Fency!</string>
+    <string name="tutorialbtnText">- Tutorial</string>
     <string name="practicebtnText">- Pratica</string>
     <string name="duelbtnText">- Duello</string>
+    <string name="fency_logo_des">Fency!</string>
+    <string name="practice_btn_des">Modalità di pratica</string>
+    <!--Tutorial-->
+    <string name="tutorialTitle">Come si gioca</string>
+    <string name="tipGuard">Inclina il dispositivo per cambiare la posizione di guardia</string>
+    <string name="tipAttack">Esegui un affondo per colpire l\'avversario dove è scoperto</string>
+    <string name="textHighGuard">Guardia alta</string>
+    <string name="textLowGuard">Guardia bassa</string>
+    <string name="textHighAttack">Attacco alto</string>
+    <string name="textLowAttack">Attacco basso</string>
     <!--Practice imperi-->
     <string name="parryUp">Para in alto!</string>
     <string name="parryDown">Para in basso!</string>
@@ -13,7 +24,7 @@
     <!--Practice approbationes-->
     <string name="success">Bravo</string>
     <string name="failure">Riprova</string>
-    <string name="music">musica</string>
+    <string name="music">Musica</string>
     <!--Duel status-->
     <string name="disconnected">Disconnesso</string>
     <string name="connected">Connesso</string>

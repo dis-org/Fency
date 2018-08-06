@@ -13,6 +13,11 @@ class HomeActivity : FencyActivity() {
         setContentView(R.layout.activity_home)
         cntFullScreen = fullscreen_content
 
+        btnTutorial.setOnClickListener {
+            playAudioEffect()
+            startActivity(Intent(this, TutorialModeActivity::class.java))
+        }
+
         btnPractice.setOnClickListener {
             playAudioEffect()
             startActivity(Intent(this, PracticeModeActivity::class.java))
@@ -26,8 +31,10 @@ class HomeActivity : FencyActivity() {
         audioBox.setOnClickListener {
             if (audioBox.isChecked) {
                 audioPlayerMusic?.start()
+                audioBox.setTextColor(Color.BLACK)
             } else {
                 audioPlayerMusic?.pause()
+                audioBox.setTextColor(Color.WHITE)
             }
         }
 
