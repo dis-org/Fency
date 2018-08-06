@@ -1,10 +1,8 @@
 package disorganizzazione.fency
 
 import android.content.Intent
-import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.widget.CheckBox
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : FencyActivity() {

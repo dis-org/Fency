@@ -22,11 +22,12 @@ class PracticeModeActivity: FencyModeActivity() {
     private val handler: Handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_practice_mode)
         cntFullScreen = fullscreen_content
+        super.onCreate(savedInstanceState)
+
         runnable = Runnable { approbatio!!.text = "" }
-        audioPlayerMusic = MediaPlayer.create(this, R.raw.approve_01) //TODO
+        audioPlayerMusic = MediaPlayer.create(this, R.raw.approve_01) // TODO("Should be audioPlayerEffects2 or array of MediaPlayer")
         discipuli = ivPlayerState
         magistri = ivOpponentState
         imperium = tvCommand
