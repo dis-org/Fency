@@ -34,10 +34,9 @@ class TutorialModeActivity: FencyModeActivity() {
     private var tv_l_a: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tutorial_mode)
+        setContentView(R.layout.activity_tutorial_mode) // do not change order
         cntFullScreen = fullscreen_content
-        goFullScreen()
+        super.onCreate(savedInstanceState)
 
         usor_mid = iv_tutorial_invalid
 

@@ -22,7 +22,7 @@ class PracticeModeActivity: FencyModeActivity() {
     private val handler: Handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_practice_mode)
+        setContentView(R.layout.activity_practice_mode) // do not change order
         cntFullScreen = fullscreen_content
         super.onCreate(savedInstanceState)
 

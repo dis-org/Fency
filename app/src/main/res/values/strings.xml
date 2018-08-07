@@ -26,6 +26,6 @@
     <string name="failure">Riprova</string>
     <string name="music">Musica</string>
     <!--Duel status-->
-    <string name="disconnected">Disconnesso</string>
-    <string name="connected">Connesso</string>
+    <string name="disconnected">In attesa di uno sfidante</string>
+    <string name="connected">CONTRO</string>
 </resources>

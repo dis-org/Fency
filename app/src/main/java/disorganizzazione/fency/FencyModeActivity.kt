@@ -74,6 +74,7 @@ abstract class FencyModeActivity: FencyActivity() {
     }
 
     protected fun vibrate(){
+        @Suppress("DEPRECATION")
         if(android.os.Build.VERSION.SDK_INT >= 26)
             vibrator!!.vibrate(VibrationEffect.createOneShot(VIBRATION_LENGTH, VibrationEffect.DEFAULT_AMPLITUDE))
         else
