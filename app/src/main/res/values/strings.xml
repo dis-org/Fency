@@ -28,4 +28,6 @@
     <!--Duel status-->
     <string name="disconnected">In attesa di uno sfidante</string>
     <string name="connected">CONTRO</string>
+    <string name="error_missing_permissions">Errore: permessi insufficienti per avviare la connessione.</string>
+
 </resources>
