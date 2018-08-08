@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@mipmap/img_fency_mainmenubackground"
     tools:context=".HomeActivity"
     android:id="@+id/fullscreen_content">
@@ -33,7 +32,7 @@
         android:layout_marginRight="@dimen/logolayoutmargin"
         android:layout_marginTop="32dp"
         android:contentDescription="@string/fency_logo_des"
-        app:srcCompat="@mipmap/img_fency_logo"/>
+        android:src="@mipmap/img_fency_logo"/>
 
     <TextView
         android:id="@+id/btnTutorial"

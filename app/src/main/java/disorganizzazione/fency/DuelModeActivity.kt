@@ -6,7 +6,6 @@ import com.google.android.gms.nearby.connection.*
 
 import kotlinx.android.synthetic.main.activity_duel_mode.*
 
-
 class DuelModeActivity: FencyModeActivity(){
 
     val signum = TriaNomina().toString()
@@ -21,6 +20,13 @@ class DuelModeActivity: FencyModeActivity(){
         cntFullScreen = fullscreen_content
         super.onCreate(savedInstanceState)
 
+        //PROVA FRAGMENT
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragment = ConnectionFragment()
+        fragmentTransaction.add(R.id.fragment_container, fragment)
+        fragmentTransaction.commit()
+        ////
 
         signaText.text = signum
         connectionsClient = Nearby.getConnectionsClient(this)
