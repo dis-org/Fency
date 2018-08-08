@@ -1,6 +1,9 @@
 package disorganizzazione.fency
 
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.support.annotation.CallSuper
+import android.widget.Toast
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
 
@@ -13,31 +16,6 @@ class DuelModeActivity: FencyModeActivity(){
 
     private var connectionsClient: ConnectionsClient? = null
     private var opponentEndpointId: String? = null
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_duel_mode) // do not change order
-        cntFullScreen = fullscreen_content
-        super.onCreate(savedInstanceState)
-
-        //PROVA FRAGMENT
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        val fragment = ConnectionFragment()
-        fragmentTransaction.add(R.id.fragment_container, fragment)
-        fragmentTransaction.commit()
-        ////
-
-        signaText.text = signum
-        connectionsClient = Nearby.getConnectionsClient(this)
-        connectionsClient!!.startAdvertising(
-                signum, packageName, connectionLifecycleCallback,
-                AdvertisingOptions.Builder().setStrategy(STRATEGY).build())
-        connectionsClient!!.startDiscovery(
-                packageName, endpointDiscoveryCallback,
-                DiscoveryOptions.Builder().setStrategy(STRATEGY).build())
-
-    }
 
     // Callbacks for receiving payloads
     private val payloadCallback = object : PayloadCallback() {
@@ -80,6 +58,57 @@ class DuelModeActivity: FencyModeActivity(){
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setContentView(R.layout.activity_duel_mode) // do not change order
+        cntFullScreen = fullscreen_content
+        super.onCreate(savedInstanceState)
+
+        //PROVA FRAGMENT
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragment = ConnectionFragment()
+        fragmentTransaction.add(R.id.fragment_container, fragment)
+        fragmentTransaction.commit()
+        ////
+
+        signaText.text = signum
+        connectionsClient = Nearby.getConnectionsClient(this)
+        connectionsClient!!.startAdvertising(
+                signum, packageName, connectionLifecycleCallback,
+                AdvertisingOptions.Builder().setStrategy(STRATEGY).build())
+        connectionsClient!!.startDiscovery(
+                packageName, endpointDiscoveryCallback,
+                DiscoveryOptions.Builder().setStrategy(STRATEGY).build())
+
+    }
+
+    override fun onStop() {
+        connectionsClient!!.stopAllEndpoints()
+        resetGame()
+
+        super.onStop()
+    }
+
+    /** Handles user acceptance (or denial) of our permission request.  */
+    @CallSuper
+    override fun onRequestPermissionsResult(
+            requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode != REQUEST_CODE_REQUIRED_PERMISSIONS) {
+            return
+        }
+
+        for (grantResult in grantResults) {
+            if (grantResult == PackageManager.PERMISSION_DENIED) {
+                Toast.makeText(this, R.string.error_missing_permissions, Toast.LENGTH_LONG).show()
+                finish()
+                return
+            }
+        }
+        recreate()
+    }
+
     private fun resetGame() {
         opponentEndpointId = null
         adversatorSigna = null
@@ -93,5 +122,7 @@ class DuelModeActivity: FencyModeActivity(){
 
     companion object {
         private val STRATEGY = Strategy.P2P_STAR
+        private val REQUEST_CODE_REQUIRED_PERMISSIONS = 1
+
     }
 }
