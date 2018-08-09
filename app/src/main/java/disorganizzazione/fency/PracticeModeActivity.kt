@@ -93,8 +93,8 @@ class PracticeModeActivity: FencyModeActivity() {
         }
     }
 
-     override fun updateGameView(gameState: Int) {
-        super.updateGameView(gameState)
+     override fun updateGameView() {
+        super.updateGameView()
 
         if (usor!!.state == arbiter!!.toImperium()) {
             approbatio!!.setText(R.string.success)

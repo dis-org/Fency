@@ -23,21 +23,47 @@ class DuelModeActivity: FencyModeActivity(){
     // Callbacks for receiving payloads
     private val payloadCallback = object : PayloadCallback() {
         override fun onPayloadReceived(endpointId: String, payload: Payload) {
-            val newState = payload.toString().toInt() //TODO : probabilmente non ha senso
-            Toast.makeText(applicationContext, "stato = $newState",Toast.LENGTH_SHORT).show()
-            adversator!!.state = newState
+            val payloadByte = payload.asBytes()!![0]
+            Toast.makeText(applicationContext, "onPayloadReceived $payloadByte", Toast.LENGTH_SHORT).show()//TODO: remove
+            when (payloadByte){
+                H_A_BYTE -> {
+                    adversator!!.state = R.integer.HIGH_ATTACK
+                    gameSync()
+                }
+                L_A_BYTE -> {
+                    adversator!!.state = R.integer.LOW_ATTACK
+                    gameSync()
+                }
+                DRAW_BYTE -> ludum!!.state = R.integer.GAME_DRAW
+                SCORE_BYTE -> ludum!!.state = R.integer.GAME_P1
+            }
         }
 
-        override fun onPayloadTransferUpdate(endpointId: String, update: PayloadTransferUpdate) {
-            if (update.status == PayloadTransferUpdate.Status.SUCCESS) ludum!!.update()
-        }
+        override fun onPayloadTransferUpdate(endpointId: String, update: PayloadTransferUpdate) {}
+    }
+
+    fun gameSync() {
+        Toast.makeText(applicationContext, "gameSync", Toast.LENGTH_SHORT).show()//TODO: remove
+
+        if(ludum!!.score2())
+            sendFuckingPayload(SCORE_BYTE)
+        else
+            sendFuckingPayload(DRAW_BYTE)
+    }
+
+    fun sendFuckingPayload(fucking : Byte) {
+        Toast.makeText(applicationContext, "sendFuckingPayload $fucking", Toast.LENGTH_SHORT).show()//TODO: remove
+        connectionsClient!!.sendPayload(opponentEndpointId!!,Payload.fromBytes(
+                ByteArray(1) {return@ByteArray fucking}
+        ))
+
     }
 
     // Callbacks for finding other devices
     private val endpointDiscoveryCallback = object : EndpointDiscoveryCallback() {
         override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
-            connectionsClient!!.requestConnection(signum, endpointId, connectionLifecycleCallback)
             Toast.makeText(applicationContext, "onEndpointFound", Toast.LENGTH_SHORT).show()//TODO: remove
+            connectionsClient!!.requestConnection(signum, endpointId, connectionLifecycleCallback)
         }
 
         override fun onEndpointLost(endpointId: String) {}
@@ -46,27 +72,24 @@ class DuelModeActivity: FencyModeActivity(){
     // Callbacks for finding other devices
     private val connectionLifecycleCallback = object :  ConnectionLifecycleCallback() {
         override fun onConnectionInitiated(endpointId: String, connectionInfo: ConnectionInfo) {
+            Toast.makeText(applicationContext, "onConnectionInitiated", Toast.LENGTH_SHORT).show()//TODO: remove
             connectionsClient!!.acceptConnection(endpointId, payloadCallback)
             adversatorSigna = connectionInfo.endpointName
-
-            Toast.makeText(applicationContext, "onConnectionInitiated", Toast.LENGTH_SHORT).show()//TODO: remove
         }
 
         override fun onConnectionResult(endpointId: String, result: ConnectionResolution) {
+            Toast.makeText(applicationContext, "onConnectionResult", Toast.LENGTH_SHORT).show()//TODO: remove
             connectionsClient!!.stopDiscovery()
             connectionsClient!!.stopAdvertising()
 
             opponentEndpointId = endpointId
             statusText.text = getString(R.string.connected)
             adveText.text = adversatorSigna
-
-            Toast.makeText(applicationContext, "onConnectionResult", Toast.LENGTH_SHORT).show()//TODO: remove
         }
 
         override fun onDisconnected(endpointId: String) {
-            resetGame()
-
             Toast.makeText(applicationContext, "onDisconnected", Toast.LENGTH_SHORT).show()//TODO: remove
+            resetGame()
         }
     }
 
@@ -103,11 +126,11 @@ class DuelModeActivity: FencyModeActivity(){
             }
     }
 
-    override fun onStop() {
-        connectionsClient!!.stopAllEndpoints()
+    override fun onPause() {
+        connectionsClient?.stopAllEndpoints()
         resetGame()
 
-        super.onStop()
+        super.onPause()
     }
 
     /** Handles user acceptance (or denial) of our permission request.  */
@@ -140,18 +163,21 @@ class DuelModeActivity: FencyModeActivity(){
 
     override fun updatePlayerView(caller: Player) {
         //TODO
+        val status: Int = caller.state
+
         if(opponentEndpointId != null && caller == usor) {
-            if (caller.state == R.integer.HIGH_ATTACK || caller.state == R.integer.LOW_ATTACK) {
-                connectionsClient!!.sendPayload(
-                    opponentEndpointId!!, Payload.fromBytes(ByteArray(caller.state)))
+            if (status == R.integer.HIGH_ATTACK ){
+                sendFuckingPayload(H_A_BYTE)
+            } else if (status == R.integer.LOW_ATTACK) {
+                sendFuckingPayload(L_A_BYTE)
             }
         }
-
     }
 
-    override fun updateGameView(gameState: Int) {
-        super.updateGameView(gameState)
-        statusText.text = ludum!!.state.toString()
+    override fun updateGameView() {
+        super.updateGameView()
+        val scoreString = "${ludum!!.score1}:${ludum!!.score2}"
+        scoreText.text = scoreString
     }
 
     companion object {
@@ -163,6 +189,12 @@ class DuelModeActivity: FencyModeActivity(){
         Manifest.permission.ACCESS_WIFI_STATE,
         Manifest.permission.CHANGE_WIFI_STATE,
         Manifest.permission.ACCESS_COARSE_LOCATION)
+
+        private val H_A_BYTE = 0.toByte()
+        private val L_A_BYTE = 1.toByte()
+        private val DRAW_BYTE = 2.toByte()
+        private val SCORE_BYTE = 3.toByte()
+
         /** Returns true if the app was granted all the permissions. Otherwise, returns false.  */
         private fun hasPermissions(context: Context, vararg permissions: String): Boolean {
             for (permission in permissions) {

@@ -28,6 +28,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/statusText"/>
 
+    <TextView
+        android:id="@+id/scoreText"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_below="@id/adveText"
+        android:gravity="center"
+        android:textSize="80sp"/>
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"

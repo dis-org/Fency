@@ -66,8 +66,8 @@ abstract class FencyModeActivity: FencyActivity() {
 
     abstract fun updatePlayerView(caller: Player)
 
-    open fun updateGameView(gameState: Int) {
-        if (gameState == R.integer.GAME_DRAW) {
+    open fun updateGameView() {
+        if (ludum!!.state == R.integer.GAME_DRAW) {
             vibrate()
             audioPlayerEffects?.start()
         }
