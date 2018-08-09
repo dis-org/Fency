@@ -1,8 +1,11 @@
 package disorganizzazione.fency
 
+import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.annotation.CallSuper
+import android.support.v4.content.ContextCompat
 import android.widget.Toast
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
@@ -20,11 +23,13 @@ class DuelModeActivity: FencyModeActivity(){
     // Callbacks for receiving payloads
     private val payloadCallback = object : PayloadCallback() {
         override fun onPayloadReceived(endpointId: String, payload: Payload) {
-            //opponentChoice = GameChoice.valueOf(String(payload.asBytes()!!, UTF_8))
+            val newState = payload.toString().toInt() //TODO : probabilmente non ha senso
+            Toast.makeText(applicationContext, "stato = $newState",Toast.LENGTH_SHORT).show()
+            adversator!!.state = newState
         }
 
         override fun onPayloadTransferUpdate(endpointId: String, update: PayloadTransferUpdate) {
-            //if (update.status == Status.SUCCESS && myChoice != null && opponentChoice != null)  finishRound()
+            if (update.status == PayloadTransferUpdate.Status.SUCCESS) ludum!!.update()
         }
     }
 
@@ -32,6 +37,7 @@ class DuelModeActivity: FencyModeActivity(){
     private val endpointDiscoveryCallback = object : EndpointDiscoveryCallback() {
         override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
             connectionsClient!!.requestConnection(signum, endpointId, connectionLifecycleCallback)
+            Toast.makeText(applicationContext, "onEndpointFound", Toast.LENGTH_SHORT).show()//TODO: remove
         }
 
         override fun onEndpointLost(endpointId: String) {}
@@ -42,6 +48,8 @@ class DuelModeActivity: FencyModeActivity(){
         override fun onConnectionInitiated(endpointId: String, connectionInfo: ConnectionInfo) {
             connectionsClient!!.acceptConnection(endpointId, payloadCallback)
             adversatorSigna = connectionInfo.endpointName
+
+            Toast.makeText(applicationContext, "onConnectionInitiated", Toast.LENGTH_SHORT).show()//TODO: remove
         }
 
         override fun onConnectionResult(endpointId: String, result: ConnectionResolution) {
@@ -51,10 +59,14 @@ class DuelModeActivity: FencyModeActivity(){
             opponentEndpointId = endpointId
             statusText.text = getString(R.string.connected)
             adveText.text = adversatorSigna
+
+            Toast.makeText(applicationContext, "onConnectionResult", Toast.LENGTH_SHORT).show()//TODO: remove
         }
 
         override fun onDisconnected(endpointId: String) {
             resetGame()
+
+            Toast.makeText(applicationContext, "onDisconnected", Toast.LENGTH_SHORT).show()//TODO: remove
         }
     }
 
@@ -80,6 +92,15 @@ class DuelModeActivity: FencyModeActivity(){
                 packageName, endpointDiscoveryCallback,
                 DiscoveryOptions.Builder().setStrategy(STRATEGY).build())
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        if (android.os.Build.VERSION.SDK_INT >= 23)
+            if (!hasPermissions(this, *REQUIRED_PERMISSIONS)) {
+                requestPermissions(REQUIRED_PERMISSIONS, REQUEST_CODE_REQUIRED_PERMISSIONS)
+            }
     }
 
     override fun onStop() {
@@ -118,11 +139,39 @@ class DuelModeActivity: FencyModeActivity(){
     }
 
     override fun updatePlayerView(caller: Player) {
+        //TODO
+        if(opponentEndpointId != null && caller == usor) {
+            if (caller.state == R.integer.HIGH_ATTACK || caller.state == R.integer.LOW_ATTACK) {
+                connectionsClient!!.sendPayload(
+                    opponentEndpointId!!, Payload.fromBytes(ByteArray(caller.state)))
+            }
+        }
+
+    }
+
+    override fun updateGameView(gameState: Int) {
+        super.updateGameView(gameState)
+        statusText.text = ludum!!.state.toString()
     }
 
     companion object {
         private val STRATEGY = Strategy.P2P_STAR
-        private val REQUEST_CODE_REQUIRED_PERMISSIONS = 1
+        private const val REQUEST_CODE_REQUIRED_PERMISSIONS = 1
+        private val REQUIRED_PERMISSIONS = arrayOf(
+        Manifest.permission.BLUETOOTH,
+        Manifest.permission.BLUETOOTH_ADMIN,
+        Manifest.permission.ACCESS_WIFI_STATE,
+        Manifest.permission.CHANGE_WIFI_STATE,
+        Manifest.permission.ACCESS_COARSE_LOCATION)
+        /** Returns true if the app was granted all the permissions. Otherwise, returns false.  */
+        private fun hasPermissions(context: Context, vararg permissions: String): Boolean {
+            for (permission in permissions) {
+                if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false
+                }
+            }
+            return true
+        }
 
     }
 }

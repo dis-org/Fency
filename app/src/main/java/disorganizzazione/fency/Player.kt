@@ -7,9 +7,11 @@ class Player(activity : FencyModeActivity) : FencyModel(activity, R.integer.HIGH
             field = to
             activity.updatePlayerView(this)
 
+            /* TODO : rimediare ai danni
             if (field == R.integer.HIGH_ATTACK || field == R.integer.LOW_ATTACK) {
                 activity.ludum!!.update()
             }
+            */
 
     }
 
