@@ -24,17 +24,42 @@ class Game(activity : FencyModeActivity, private val playerOne : Player, private
             activity.updateGameView()
         }
 
+    fun score1(): Boolean {
+        when (playerOne.state) {
+            R.integer.LOW_ATTACK ->
+                when (playerTwo.state) {
+                    R.integer.HIGH_ATTACK, R.integer.HIGH_STAND, R.integer.INVALID -> {
+                        state = R.integer.GAME_P1
+                        return true
+                    }
+                }
+            R.integer.HIGH_ATTACK ->
+                when (playerTwo.state) {
+                    R.integer.LOW_ATTACK, R.integer.LOW_STAND, R.integer.INVALID -> {
+                        state = R.integer.GAME_P1
+                        return true
+                    }
+                }
+        }
+        state = R.integer.GAME_DRAW
+        return false
+    }
+
     fun score2(): Boolean {
         when (playerTwo.state) {
             R.integer.LOW_ATTACK ->
-                if (playerOne.state == R.integer.HIGH_ATTACK || playerOne.state == R.integer.HIGH_STAND){
-                    state = R.integer.GAME_P2
-                    return true
+                when (playerOne.state) {
+                    R.integer.HIGH_ATTACK, R.integer.HIGH_STAND, R.integer.INVALID -> {
+                        state = R.integer.GAME_P2
+                        return true
+                    }
                 }
             R.integer.HIGH_ATTACK ->
-                if (playerOne.state == R.integer.LOW_ATTACK || playerOne.state == R.integer.LOW_STAND){
-                    state = R.integer.GAME_P2
-                    return true
+                when (playerOne.state) {
+                    R.integer.LOW_ATTACK, R.integer.LOW_STAND, R.integer.INVALID -> {
+                        state = R.integer.GAME_P2
+                        return true
+                    }
                 }
         }
         state = R.integer.GAME_DRAW

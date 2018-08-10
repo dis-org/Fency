@@ -75,7 +75,7 @@ class SensorHandler(context: FencyModeActivity, player: Player) : FencyHandler(c
             val pitch = sensorFusion.pitch
             val roll = sensorFusion.roll
 
-            if (roll > sogliaRoll || roll < -sogliaRoll) {
+            if (roll > sogliaRoll || roll < -sogliaRoll ) {
                 //("Invalid")
                 player.state = R.integer.INVALID
             } else if (pitch > pitch_upbound && pitch < pitch_midbound) {

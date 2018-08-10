@@ -64,13 +64,12 @@ abstract class FencyModeActivity: FencyActivity() {
         onStop()
     }
 
-    abstract fun updatePlayerView(caller: Player)
+    open fun updatePlayerView(caller: Player) {
+        if (caller == usor) vibrate()
+    }
 
     open fun updateGameView() {
-        if (ludum!!.state == R.integer.GAME_DRAW) {
-            vibrate()
-            audioPlayerEffects?.start()
-        }
+
     }
 
     protected fun vibrate(){

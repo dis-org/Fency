@@ -24,7 +24,6 @@ class DuelModeActivity: FencyModeActivity(){
     private val payloadCallback = object : PayloadCallback() {
         override fun onPayloadReceived(endpointId: String, payload: Payload) {
             val payloadByte = payload.asBytes()!![0]
-            Toast.makeText(applicationContext, "onPayloadReceived $payloadByte", Toast.LENGTH_SHORT).show()//TODO: remove
             when (payloadByte){
                 H_A_BYTE -> {
                     adversator!!.state = R.integer.HIGH_ATTACK
@@ -43,18 +42,15 @@ class DuelModeActivity: FencyModeActivity(){
     }
 
     fun gameSync() {
-        Toast.makeText(applicationContext, "gameSync", Toast.LENGTH_SHORT).show()//TODO: remove
-
         if(ludum!!.score2())
-            sendFuckingPayload(SCORE_BYTE)
+            sendPayload(SCORE_BYTE)
         else
-            sendFuckingPayload(DRAW_BYTE)
+            sendPayload(DRAW_BYTE)
     }
 
-    fun sendFuckingPayload(fucking : Byte) {
-        Toast.makeText(applicationContext, "sendFuckingPayload $fucking", Toast.LENGTH_SHORT).show()//TODO: remove
+    private fun sendPayload(byte : Byte) {
         connectionsClient!!.sendPayload(opponentEndpointId!!,Payload.fromBytes(
-                ByteArray(1) {return@ByteArray fucking}
+                ByteArray(1) {return@ByteArray byte}
         ))
 
     }
@@ -62,7 +58,6 @@ class DuelModeActivity: FencyModeActivity(){
     // Callbacks for finding other devices
     private val endpointDiscoveryCallback = object : EndpointDiscoveryCallback() {
         override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
-            Toast.makeText(applicationContext, "onEndpointFound", Toast.LENGTH_SHORT).show()//TODO: remove
             connectionsClient!!.requestConnection(signum, endpointId, connectionLifecycleCallback)
         }
 
@@ -72,13 +67,11 @@ class DuelModeActivity: FencyModeActivity(){
     // Callbacks for finding other devices
     private val connectionLifecycleCallback = object :  ConnectionLifecycleCallback() {
         override fun onConnectionInitiated(endpointId: String, connectionInfo: ConnectionInfo) {
-            Toast.makeText(applicationContext, "onConnectionInitiated", Toast.LENGTH_SHORT).show()//TODO: remove
             connectionsClient!!.acceptConnection(endpointId, payloadCallback)
             adversatorSigna = connectionInfo.endpointName
         }
 
         override fun onConnectionResult(endpointId: String, result: ConnectionResolution) {
-            Toast.makeText(applicationContext, "onConnectionResult", Toast.LENGTH_SHORT).show()//TODO: remove
             connectionsClient!!.stopDiscovery()
             connectionsClient!!.stopAdvertising()
 
@@ -88,7 +81,6 @@ class DuelModeActivity: FencyModeActivity(){
         }
 
         override fun onDisconnected(endpointId: String) {
-            Toast.makeText(applicationContext, "onDisconnected", Toast.LENGTH_SHORT).show()//TODO: remove
             resetGame()
         }
     }
@@ -162,14 +154,13 @@ class DuelModeActivity: FencyModeActivity(){
     }
 
     override fun updatePlayerView(caller: Player) {
-        //TODO
+        super.updatePlayerView(caller)
         val status: Int = caller.state
-
         if(opponentEndpointId != null && caller == usor) {
             if (status == R.integer.HIGH_ATTACK ){
-                sendFuckingPayload(H_A_BYTE)
+                sendPayload(H_A_BYTE)
             } else if (status == R.integer.LOW_ATTACK) {
-                sendFuckingPayload(L_A_BYTE)
+                sendPayload(L_A_BYTE)
             }
         }
     }
