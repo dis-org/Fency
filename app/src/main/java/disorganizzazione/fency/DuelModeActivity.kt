@@ -11,6 +11,7 @@ import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
 
 import kotlinx.android.synthetic.main.activity_duel_mode.*
+import kotlinx.android.synthetic.main.fragment_ready.*
 
 class DuelModeActivity: FencyModeActivity(){
 
@@ -93,9 +94,11 @@ class DuelModeActivity: FencyModeActivity(){
         //PROVA FRAGMENT
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        val fragment = ConnectionFragment()
+        val fragment = ReadyFragment()
         fragmentTransaction.add(R.id.fragment_container, fragment)
         fragmentTransaction.commit()
+
+        //var textView: TextView = findViewById(R.id.tv_prova)
         ////
 
         signaText.text = signum
@@ -123,6 +126,11 @@ class DuelModeActivity: FencyModeActivity(){
         resetGame()
 
         super.onPause()
+    }
+
+    fun onReady() {
+        // TODO
+        tv_prova.text = "Ready!"
     }
 
     /** Handles user acceptance (or denial) of our permission request.  */
@@ -181,10 +189,10 @@ class DuelModeActivity: FencyModeActivity(){
         Manifest.permission.CHANGE_WIFI_STATE,
         Manifest.permission.ACCESS_COARSE_LOCATION)
 
-        private val H_A_BYTE = 0.toByte()
-        private val L_A_BYTE = 1.toByte()
-        private val DRAW_BYTE = 2.toByte()
-        private val SCORE_BYTE = 3.toByte()
+        private const val H_A_BYTE = 0.toByte()
+        private const val L_A_BYTE = 1.toByte()
+        private const val DRAW_BYTE = 2.toByte()
+        private const val SCORE_BYTE = 3.toByte()
 
         /** Returns true if the app was granted all the permissions. Otherwise, returns false.  */
         private fun hasPermissions(context: Context, vararg permissions: String): Boolean {

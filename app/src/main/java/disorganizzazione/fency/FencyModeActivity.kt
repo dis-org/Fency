@@ -4,6 +4,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.view.WindowManager
 
 abstract class FencyModeActivity: FencyActivity() {
 
@@ -24,6 +25,8 @@ abstract class FencyModeActivity: FencyActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         usor = Player(this)
         adversator = Player(this)
