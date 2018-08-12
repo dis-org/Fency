@@ -67,14 +67,14 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:src="@mipmap/img_fency_tutorial_invalid"/>
+            android:src="@mipmap/icons_duel_cancel"/>
         <ImageView
             android:id="@+id/acceptBtn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:src="@mipmap/img_fency_tutorial_middle"/>
+            android:src="@mipmap/icons_duel_accept"/>
 
     </LinearLayout>
 </LinearLayout>
