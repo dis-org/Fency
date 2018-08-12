@@ -57,85 +57,73 @@ class TutorialModeActivity: FencyModeActivity() {
 
         audioPlayerMusic = MediaPlayer.create(this, R.raw.approve_01)
         audioPlayerEffects = MediaPlayer.create(this, R.raw.sword_clash)
+
+        sensorHandler!!.registerListeners()
     }
 
     override fun updatePlayerView(caller: Player) {
-
+        super.updatePlayerView(caller)
         if (caller == usor){
-            if (!userAttacking) {
 
-                // Reset every ImageView and TextView
-                usor_h_g!!.alpha = usor_inactive_alpha
-                usor_l_g!!.alpha = usor_inactive_alpha
-                usor_h_a!!.alpha = usor_inactive_alpha
-                usor_l_a!!.alpha = usor_inactive_alpha
-                adve_h_a!!.alpha = adve_inactive_alpha
-                adve_l_a!!.alpha = adve_inactive_alpha
-                adve_l_g!!.alpha = adve_inactive_alpha
-                adve_h_g!!.alpha = adve_inactive_alpha
-                tv_h_g!!.alpha = usor_inactive_alpha
-                tv_l_g!!.alpha = usor_inactive_alpha
-                tv_h_a!!.alpha = usor_inactive_alpha
-                tv_l_a!!.alpha = usor_inactive_alpha
+            // Reset every ImageView and TextView
+            usor_h_g!!.alpha = usor_inactive_alpha
+            usor_l_g!!.alpha = usor_inactive_alpha
+            usor_h_a!!.alpha = usor_inactive_alpha
+            usor_l_a!!.alpha = usor_inactive_alpha
+            adve_h_a!!.alpha = adve_inactive_alpha
+            adve_l_a!!.alpha = adve_inactive_alpha
+            adve_l_g!!.alpha = adve_inactive_alpha
+            adve_h_g!!.alpha = adve_inactive_alpha
+            tv_h_g!!.alpha = usor_inactive_alpha
+            tv_l_g!!.alpha = usor_inactive_alpha
+            tv_h_a!!.alpha = usor_inactive_alpha
+            tv_l_a!!.alpha = usor_inactive_alpha
 
-                var usor_icon: ImageView? = null
-                var adve_icon: ImageView? = null
-                var state_tv: TextView? = null
+            var usor_icon: ImageView? = null
+            var adve_icon: ImageView? = null
+            var state_tv: TextView? = null
 
-                var new_adve_state = -1
-                val state = caller.state
+            var new_adve_state = -1
+            val state = caller.state
 
-                when (state) {
-                    R.integer.INVALID -> {
-                        usor_mid!!.setImageResource(R.mipmap.img_fency_tutorial_invalid)
-                        return
-                    }
-                    R.integer.HIGH_STAND -> {
-                        usor_icon = usor_h_g
-                        adve_icon = adve_h_a
-                        state_tv = tv_h_g
-                        new_adve_state = R.integer.HIGH_ATTACK
-                    }
-                    R.integer.LOW_STAND -> {
-                        usor_icon = usor_l_g
-                        adve_icon = adve_l_a
-                        state_tv = tv_l_g
-                        new_adve_state = R.integer.LOW_ATTACK
-                    }
-                    R.integer.HIGH_ATTACK -> {
-                        usor_icon = usor_h_a
-                        adve_icon = adve_l_g
-                        state_tv = tv_h_a
-                        new_adve_state = R.integer.LOW_STAND
-                    }
-                    R.integer.LOW_ATTACK -> {
-                        usor_icon = usor_l_a
-                        adve_icon = adve_h_g
-                        state_tv = tv_l_a
-                        new_adve_state = R.integer.HIGH_STAND
-                    }
+            when (state) {
+                R.integer.INVALID -> {
+                    usor_mid!!.setImageResource(R.mipmap.img_fency_tutorial_invalid)
+                    return
                 }
-                usor_mid!!.setImageResource(R.mipmap.img_fency_tutorial_middle)
-                usor_icon!!.alpha = usor_active_alpha
-                adve_icon!!.alpha = adve_active_alpha
-                state_tv!!.alpha = usor_active_alpha
-
-                // Allow adversator change state only if necessary
-                // This makes the device vibrate just once
-                if (new_adve_state != adversator!!.state){
-                    adversator!!.state = new_adve_state
+                R.integer.HIGH_STAND -> {
+                    usor_icon = usor_h_g
+                    adve_icon = adve_h_a
+                    state_tv = tv_h_g
+                    new_adve_state = R.integer.HIGH_ATTACK
                 }
-
-                if (state == R.integer.HIGH_ATTACK || state == R.integer.LOW_ATTACK) {
-                    vibrate()
-                    audioPlayerMusic?.start()
-                    userAttacking = true
-                    Handler().postDelayed({
-                        // Allow user image change only after delay
-                        userAttacking = false
-                    }, ATTACK_ANIMATION_DELAY)
+                R.integer.LOW_STAND -> {
+                    usor_icon = usor_l_g
+                    adve_icon = adve_l_a
+                    state_tv = tv_l_g
+                    new_adve_state = R.integer.LOW_ATTACK
+                }
+                R.integer.HIGH_ATTACK -> {
+                    usor_icon = usor_h_a
+                    adve_icon = adve_l_g
+                    state_tv = tv_h_a
+                    new_adve_state = R.integer.LOW_STAND
+                }
+                R.integer.LOW_ATTACK -> {
+                    usor_icon = usor_l_a
+                    adve_icon = adve_h_g
+                    state_tv = tv_l_a
+                    new_adve_state = R.integer.HIGH_STAND
                 }
             }
+            usor_mid!!.setImageResource(R.mipmap.img_fency_tutorial_middle)
+            usor_icon!!.alpha = usor_active_alpha
+            adve_icon!!.alpha = adve_active_alpha
+            state_tv!!.alpha = usor_active_alpha
+
+            // Allow adversator change state only if necessary
+            // This makes the device vibrate just once
+            adversator!!.state = new_adve_state
         }
     }
 }

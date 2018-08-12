@@ -20,9 +20,6 @@ abstract class FencyModeActivity: FencyActivity() {
 
     protected var sensorHandler: SensorHandler? = null
 
-    protected var userAttacking = false
-    protected var opponentAttacking = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -51,7 +48,7 @@ abstract class FencyModeActivity: FencyActivity() {
 
      override fun onPause() {
         super.onPause()
-        sensorHandler!!.unregisterListeners()
+        sensorHandler?.unregisterListeners()
         audioPlayerMusic?.release()
         audioPlayerEffects?.release()
     }

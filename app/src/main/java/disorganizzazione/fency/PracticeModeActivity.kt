@@ -40,6 +40,8 @@ class PracticeModeActivity: FencyModeActivity() {
         //start tutorial
         arbiter!!.step(false)
 
+        sensorHandler!!.registerListeners()
+
     }
 
     override fun onStop() {
@@ -52,45 +54,24 @@ class PracticeModeActivity: FencyModeActivity() {
 
         val state = caller.state
         var icon: ImageView? = null
-        var attackOn = true
 
-        if (caller == usor) {
-            icon = discipuli
-            attackOn = userAttacking
-        } else if (caller == adversator) {
-            icon = magistri
-            attackOn = opponentAttacking
+        icon = when (caller) {
+            usor -> discipuli
+            adversator -> magistri
+            else -> null
         }
 
         icon!!.imageAlpha = 255
 
-        if (!attackOn) {
-            //change player img
-            when (state) {
-                R.integer.HIGH_STAND -> icon.setImageResource(R.mipmap.fency_high_stand)
-                R.integer.LOW_STAND -> icon.setImageResource(R.mipmap.fency_low_stand)
-                R.integer.HIGH_ATTACK -> icon.setImageResource(R.mipmap.fency_high_attack)
-                R.integer.LOW_ATTACK -> icon.setImageResource(R.mipmap.fency_low_attack)
-                R.integer.INVALID -> icon.imageAlpha = 80
-            }
-            if (state == R.integer.HIGH_ATTACK || state == R.integer.LOW_ATTACK) {
-
-                if (caller == usor) {
-                    userAttacking = true
-                    handler.postDelayed({
-                        // Allow user image change only after delay
-                        userAttacking = false
-                    }, ATTACK_ANIMATION_DELAY)
-                } else if (caller == adversator) {
-                    opponentAttacking = true
-                    Handler().postDelayed({
-                        // Allow opponent image and state change only after delay
-                        opponentAttacking = false
-                        adversator!!.state = R.integer.HIGH_STAND
-                    }, ATTACK_ANIMATION_DELAY)
-                }
-            }
+        //change player img
+        when (state) {
+            R.integer.HIGH_STAND -> icon.setImageResource(R.mipmap.fency_high_stand)
+            R.integer.LOW_STAND -> icon.setImageResource(R.mipmap.fency_low_stand)
+            R.integer.HIGH_ATTACK -> icon.setImageResource(R.mipmap.fency_high_attack)
+            R.integer.LOW_ATTACK -> icon.setImageResource(R.mipmap.fency_low_attack)
+            R.integer.INVALID -> icon.imageAlpha = 80
         }
+
     }
 
      override fun updateGameView() {
