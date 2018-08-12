@@ -112,7 +112,7 @@ class DuelModeActivity: FencyModeActivity(){
         }
     }
     private fun disableButtons(){
-        cancelBtn.setOnClickListener{null}
+        cancelBtn.setOnClickListener(null)
         acceptBtn.setOnClickListener(null)
     }
 
@@ -183,7 +183,7 @@ class DuelModeActivity: FencyModeActivity(){
         opponentEndpointId = null
         adversatorSigna = null
 
-        adveText.text = "..." //TODO
+        adveText.setText(R.string.dots)
     }
 
     override fun updatePlayerView(caller: Player) {
@@ -200,7 +200,7 @@ class DuelModeActivity: FencyModeActivity(){
 
     override fun updateGameView() {
         super.updateGameView()
-        val scoreString = "${ludum!!.score1}:${ludum!!.score2}"
+        //val scoreString = "${ludum!!.score1}:${ludum!!.score2}"
 
         //TODO scoreText.text = scoreString
     }

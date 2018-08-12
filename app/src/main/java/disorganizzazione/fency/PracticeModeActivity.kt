@@ -53,9 +53,7 @@ class PracticeModeActivity: FencyModeActivity() {
     override fun updatePlayerView(caller: Player) {
 
         val state = caller.state
-        var icon: ImageView? = null
-
-        icon = when (caller) {
+        val icon: ImageView? = when (caller) {
             usor -> discipuli
             adversator -> magistri
             else -> null
@@ -106,8 +104,6 @@ class PracticeModeActivity: FencyModeActivity() {
     }
 
     companion object {
-
-        private const val ATTACK_ANIMATION_DELAY: Long = 500 //milliseconds
         private const val SERVICE_TIME: Long = 1500
     }
 

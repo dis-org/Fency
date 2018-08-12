@@ -26,8 +26,7 @@
     <string name="failure">Riprova</string>
     <string name="music">Musica</string>
     <!--Duel-->
-    <string name="disconnected">In attesa di uno sfidante</string>
-    <string name="connected">VERSUS</string>
+    <string name="dots">. . .</string>
     <string name="error_missing_permissions">Errore: permessi insufficienti per avviare la connessione.</string>
 
 </resources>
