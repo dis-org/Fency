@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 
 class ReadyFragment : Fragment() {
 
@@ -17,9 +16,6 @@ class ReadyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        var textView: TextView = view.findViewById(R.id.tv_prova)
-        textView.text = "Cambio"
 
         (activity as DuelModeActivity).onReady()
     }

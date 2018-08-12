@@ -35,7 +35,8 @@ abstract class FencyModeActivity: FencyActivity() {
         vibrator = this.getSystemService(VIBRATOR_SERVICE) as Vibrator
 
         sensorHandler = SensorHandler(this, usor!!)
-        sensorHandler!!.registerListeners()
+
+        //sensorHandler!!.registerListeners() TODO: fix in mode activities subclasses
 
         audioPlayerEffects = MediaPlayer.create(this, R.raw.sword_clash)
 
@@ -43,7 +44,7 @@ abstract class FencyModeActivity: FencyActivity() {
 
     override fun onResume() {
         super.onResume()
-        sensorHandler!!.registerListeners()
+        //sensorHandler!!.registerListeners() TODO: fix in mode activities subclasses
         //audioPlayerMusic = null
         audioPlayerEffects = MediaPlayer.create(this, R.raw.sword_clash)
     }

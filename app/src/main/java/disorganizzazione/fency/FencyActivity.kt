@@ -3,6 +3,7 @@ package disorganizzazione.fency
 import android.media.MediaPlayer
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.widget.Toast
 
 abstract class FencyActivity : AppCompatActivity(){
 
@@ -28,6 +29,10 @@ abstract class FencyActivity : AppCompatActivity(){
         super.onPause()
         audioPlayerMusic?.release()
 
+    }
+
+    protected fun makeToast(text:String){
+        Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT).show()
     }
 
 }

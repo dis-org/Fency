@@ -5,36 +5,8 @@
     android:id="@+id/fullscreen_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00aaac"
+    android:background="@mipmap/img_fency_mainmenubackground"
     tools:context=".DuelModeActivity">
-
-    <TextView
-        android:id="@+id/signaText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"/>
-
-    <TextView
-        android:id="@+id/statusText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/signaText"
-        android:text="@string/disconnected"/>
-
-    <TextView
-        android:id="@+id/adveText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/statusText"/>
-
-    <TextView
-        android:id="@+id/scoreText"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_below="@id/adveText"
-        android:gravity="center"
-        android:textSize="80sp"/>
 
     <FrameLayout
         android:id="@+id/fragment_container"

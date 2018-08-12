@@ -16,12 +16,13 @@
         android:layout_weight="2"
         android:fontFamily="casual"
         android:gravity="center_horizontal"
+        android:paddingTop="8dp"
         android:singleLine="true"
         android:text="@string/tutorialTitle"
         android:textAllCaps="true"
-        android:textColor="@color/black_overlay"
+        android:textColor="@color/brown_ink"
         android:textSize="36sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tv_tutorial_tip_guard"
@@ -34,8 +35,9 @@
         android:text="@string/tipGuard"
         android:textAlignment="center"
         android:textAllCaps="false"
-        android:textColor="@color/brown_ink"
-        android:textSize="24sp" />
+        android:textColor="@color/black_overlay"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:id="@+id/lay_tutorial_guard_tv"
@@ -251,7 +253,8 @@
         android:text="@string/tipAttack"
         android:textAlignment="center"
         android:textAllCaps="false"
-        android:textColor="@color/brown_ink"
-        android:textSize="24sp" />
+        android:textColor="@color/black_overlay"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
 </LinearLayout>

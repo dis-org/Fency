@@ -122,7 +122,6 @@ class TriaNomina{
                 "Corvus",
                 "Cornix",
                 "Cyprianus",
-                "Dio",
                 "Diocletianus",
                 "Dominicus",
                 "Domitianus",

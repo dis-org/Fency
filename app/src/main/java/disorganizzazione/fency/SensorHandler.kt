@@ -5,6 +5,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.Handler
 
 class SensorHandler(context: FencyModeActivity, player: Player) : FencyHandler(context, player), SensorEventListener {
 
@@ -25,6 +26,9 @@ class SensorHandler(context: FencyModeActivity, player: Player) : FencyHandler(c
     private var start: Boolean = false
     private var startingAttackTime: Long = 0
     private val SENSOR_DELAY = SensorManager.SENSOR_DELAY_GAME
+
+    private val ATTACK_DURATION: Long = 500
+    private var attacking = false
 
     init {
         sensorFusion.setMode(SensorFusion.Mode.GYRO)
@@ -56,93 +60,104 @@ class SensorHandler(context: FencyModeActivity, player: Player) : FencyHandler(c
     }
 
     override fun onSensorChanged(event: SensorEvent) {
-        val id = event.sensor.type
-        //handle SensorFusion cases
-        when (id) {
-            Sensor.TYPE_ACCELEROMETER -> {
-                sensorFusion.setAccel(event.values)
-                sensorFusion.calculateAccMagOrientation()
+
+        if (!attacking) {
+            val id = event.sensor.type
+            //handle SensorFusion cases
+            when (id) {
+                Sensor.TYPE_ACCELEROMETER -> {
+                    sensorFusion.setAccel(event.values)
+                    sensorFusion.calculateAccMagOrientation()
+                }
+
+                Sensor.TYPE_GYROSCOPE -> sensorFusion.gyroFunction(event)
+
+                Sensor.TYPE_MAGNETIC_FIELD -> sensorFusion.setMagnet(event.values)
             }
 
-            Sensor.TYPE_GYROSCOPE -> sensorFusion.gyroFunction(event)
+            if (id == Sensor.TYPE_LINEAR_ACCELERATION) {
 
-            Sensor.TYPE_MAGNETIC_FIELD -> sensorFusion.setMagnet(event.values)
-        }
+                val yCurrent = event.values[1]
+                val pitch = sensorFusion.pitch
+                val roll = sensorFusion.roll
 
-        if (id == Sensor.TYPE_LINEAR_ACCELERATION) {
+                if (roll > sogliaRoll || roll < -sogliaRoll) {
+                    //("Invalid")
+                    player.state = R.integer.INVALID
+                } else if (pitch > pitch_upbound && pitch < pitch_midbound) {
+                    //("High Guard")
+                    player.state = R.integer.HIGH_STAND
+                } else if (pitch >= pitch_midbound && pitch < pitch_lowbound) {
+                    //("Low Guard")
+                    player.state = R.integer.LOW_STAND
+                } else {
+                    //("Invalid")
+                    player.state = R.integer.INVALID
+                }
 
-            val yCurrent = event.values[1]
-            val pitch = sensorFusion.pitch
-            val roll = sensorFusion.roll
+                if (start) {
+                    // Initialize last y
+                    yPrevious = yCurrent
+                    start = false
+                } else {
+                    yDelta = yCurrent - yPrevious
 
-            if (roll > sogliaRoll || roll < -sogliaRoll ) {
-                //("Invalid")
-                player.state = R.integer.INVALID
-            } else if (pitch > pitch_upbound && pitch < pitch_midbound) {
-                //("High Guard")
-                player.state = R.integer.HIGH_STAND
-            } else if (pitch >= pitch_midbound && pitch < pitch_lowbound) {
-                //("Low Guard")
-                player.state = R.integer.LOW_STAND
-            } else {
-                //("Invalid")
-                player.state = R.integer.INVALID
-            }
-
-            if (start) {
-                // Initialize last y
-                yPrevious = yCurrent
-                start = false
-            } else {
-                yDelta = yCurrent - yPrevious
-
-                when (state) {
-                    0 -> if (yCurrent > sogliaY && yDelta > 0
-                            && player.state != R.integer.INVALID) {
-                        //save the starting time of the (possible) attack
-                        startingAttackTime = event.timestamp
-                        //go to state 1
-                        state = 1
-                    } else if (yCurrent < -sogliaY && yDelta < 0) {
-                        //go to state -1
-                        state = -1
-                    }
-                    1 ->
-                        //waiting for positive spike
-                        if (yDelta < 0) {
-                            peak = yCurrent
-                            //go to state 2
-                            state = 2
+                    when (state) {
+                        0 -> if (yCurrent > sogliaY && yDelta > 0
+                                && player.state != R.integer.INVALID) {
+                            //save the starting time of the (possible) attack
+                            startingAttackTime = event.timestamp
+                            //go to state 1
+                            state = 1
+                        } else if (yCurrent < -sogliaY && yDelta < 0) {
+                            //go to state -1
+                            state = -1
                         }
-                    2 ->
-                        //waiting for negative spike
-                        if (yDelta > 0) {
-                            if (player.state != R.integer.INVALID &&
-                                    peak + yCurrent < 0 && event.timestamp - startingAttackTime > attackMinLength) {
-                                //AFFONDO!
-                                if (player.state == R.integer.LOW_STAND)
-                                    player.state = R.integer.LOW_ATTACK
-                                else if (player.state == R.integer.HIGH_STAND)
-                                    player.state = R.integer.HIGH_ATTACK
+                        1 ->
+                            //waiting for positive spike
+                            if (yDelta < 0) {
+                                peak = yCurrent
+                                //go to state 2
+                                state = 2
                             }
-                            startingAttackTime = 0
-                            peak = 0f
-                            //go to state 0
-                            state = 0
+                        2 ->
+                            //waiting for negative spike
+                            if (yDelta > 0) {
+                                if (player.state != R.integer.INVALID &&
+                                     peak + yCurrent < 0 &&
+                                      event.timestamp - startingAttackTime > attackMinLength) {
+                                    //ATTACK!
+                                    attacking = true
+                                    Handler().postDelayed({
+                                        // Allow user to change state only after delay
+                                        attacking = false
+                                        onSensorChanged(event)
+                                    }, ATTACK_DURATION)
+
+                                    if (player.state == R.integer.LOW_STAND)
+                                        player.state = R.integer.LOW_ATTACK
+                                    else if (player.state == R.integer.HIGH_STAND)
+                                        player.state = R.integer.HIGH_ATTACK
+                                }
+                                startingAttackTime = 0
+                                peak = 0f
+                                //go to state 0
+                                state = 0
+                            }
+                        -1 ->
+                            //waiting for negative spike
+                            if (yDelta > 0) {
+                                //go to state -2
+                                state = -2
+                            }
+                        -2 ->
+                            //waiting for positive spike
+                            if (yDelta < 0) {
+                                //back to state 0 (idle)
+                                state = 0
+                            }
+                        else -> {
                         }
-                    -1 ->
-                        //waiting for negative spike
-                        if (yDelta > 0) {
-                            //go to state -2
-                            state = -2
-                        }
-                    -2 ->
-                        //waiting for positive spike
-                        if (yDelta < 0) {
-                            //back to state 0 (idle)
-                            state = 0
-                        }
-                    else -> {
                     }
                 }
             }

@@ -68,17 +68,33 @@ class DuelModeActivity: FencyModeActivity(){
     // Callbacks for finding other devices
     private val connectionLifecycleCallback = object :  ConnectionLifecycleCallback() {
         override fun onConnectionInitiated(endpointId: String, connectionInfo: ConnectionInfo) {
-            connectionsClient!!.acceptConnection(endpointId, payloadCallback)
+
+            opponentEndpointId = endpointId
             adversatorSigna = connectionInfo.endpointName
+            adveText.text = adversatorSigna
+
+            onSomeoneFound()
         }
 
         override fun onConnectionResult(endpointId: String, result: ConnectionResolution) {
-            connectionsClient!!.stopDiscovery()
-            connectionsClient!!.stopAdvertising()
 
-            opponentEndpointId = endpointId
-            statusText.text = getString(R.string.connected)
-            adveText.text = adversatorSigna
+            when (result.status.statusCode){
+                ConnectionsStatusCodes.STATUS_OK -> {
+                    connectionsClient!!.stopDiscovery()
+                    connectionsClient!!.stopAdvertising()
+
+                    sensorHandler!!.registerListeners()
+
+                    makeToast("Connected to opponent")
+                }
+                ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED -> {
+                    //TODO
+                }
+                ConnectionsStatusCodes.STATUS_ERROR -> {
+                    //TODO
+                    makeToast("Connection attempt failed")
+                }
+            }
         }
 
         override fun onDisconnected(endpointId: String) {
@@ -86,22 +102,32 @@ class DuelModeActivity: FencyModeActivity(){
         }
     }
 
+    private fun onSomeoneFound(){
+        cancelBtn.setOnClickListener {
+            connectionsClient!!.rejectConnection(opponentEndpointId!!)
+            disableButtons()
+        }
+        acceptBtn.setOnClickListener {
+            connectionsClient!!.acceptConnection(opponentEndpointId!!, payloadCallback)
+        }
+    }
+    private fun disableButtons(){
+        cancelBtn.setOnClickListener{null}
+        acceptBtn.setOnClickListener(null)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_duel_mode) // do not change order
         cntFullScreen = fullscreen_content
         super.onCreate(savedInstanceState)
 
-        //PROVA FRAGMENT
+        // Fragments handling
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         val fragment = ReadyFragment()
         fragmentTransaction.add(R.id.fragment_container, fragment)
         fragmentTransaction.commit()
 
-        //var textView: TextView = findViewById(R.id.tv_prova)
-        ////
-
-        signaText.text = signum
         connectionsClient = Nearby.getConnectionsClient(this)
         connectionsClient!!.startAdvertising(
                 signum, packageName, connectionLifecycleCallback,
@@ -110,6 +136,11 @@ class DuelModeActivity: FencyModeActivity(){
                 packageName, endpointDiscoveryCallback,
                 DiscoveryOptions.Builder().setStrategy(STRATEGY).build())
 
+    }
+
+    fun onReady() {
+        // TODO
+        signaText.text = signum
     }
 
     override fun onStart() {
@@ -126,11 +157,6 @@ class DuelModeActivity: FencyModeActivity(){
         resetGame()
 
         super.onPause()
-    }
-
-    fun onReady() {
-        // TODO
-        tv_prova.text = "Ready!"
     }
 
     /** Handles user acceptance (or denial) of our permission request.  */
@@ -157,14 +183,13 @@ class DuelModeActivity: FencyModeActivity(){
         opponentEndpointId = null
         adversatorSigna = null
 
-        statusText.text = getString(R.string.disconnected)
-        adveText.text = ""
+        adveText.text = "..." //TODO
     }
 
     override fun updatePlayerView(caller: Player) {
         super.updatePlayerView(caller)
         val status: Int = caller.state
-        if(opponentEndpointId != null && caller == usor) {
+        if(caller == usor) {
             if (status == R.integer.HIGH_ATTACK ){
                 sendPayload(H_A_BYTE)
             } else if (status == R.integer.LOW_ATTACK) {
@@ -176,7 +201,8 @@ class DuelModeActivity: FencyModeActivity(){
     override fun updateGameView() {
         super.updateGameView()
         val scoreString = "${ludum!!.score1}:${ludum!!.score2}"
-        scoreText.text = scoreString
+
+        //TODO scoreText.text = scoreString
     }
 
     companion object {
