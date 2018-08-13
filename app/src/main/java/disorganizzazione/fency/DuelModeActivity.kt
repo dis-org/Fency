@@ -13,6 +13,7 @@ import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
 
 import kotlinx.android.synthetic.main.activity_duel_mode.*
+import kotlinx.android.synthetic.main.fragment_go.*
 import kotlinx.android.synthetic.main.fragment_ready.*
 
 class DuelModeActivity: FencyModeActivity(){
@@ -88,7 +89,7 @@ class DuelModeActivity: FencyModeActivity(){
                     makeSnackbar(R.string.connected)
 
                     disableButtons()
-                    //sensorHandler!!.registerListeners() TODO
+                    switchToFragment(GoFragment())
                 }
                 ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED -> {
                     makeSnackbar(R.string.rejected)
@@ -126,7 +127,7 @@ class DuelModeActivity: FencyModeActivity(){
         connectionsClient!!.stopDiscovery()
         connectionsClient!!.stopAdvertising()
 
-        enableButtons()
+        enableButtons("Ready")
     }
 
     private fun disableButtons(){
@@ -135,25 +136,38 @@ class DuelModeActivity: FencyModeActivity(){
         cancelBtn.visibility = View.INVISIBLE
         acceptBtn.visibility = View.INVISIBLE
     }
-    private fun enableButtons(){
+    private fun enableButtons(state : String){
         cancelBtn.visibility = View.VISIBLE
         acceptBtn.visibility = View.VISIBLE
 
-        cancelBtn.setOnClickListener {
-            connectionsClient!!.rejectConnection(opponentEndpointId!!)
-            disableButtons()
+        when (state){
+            "Ready" -> {
+                cancelBtn.setOnClickListener {
+                    connectionsClient!!.rejectConnection(opponentEndpointId!!)
+                    disableButtons()
+                }
+                acceptBtn.setOnClickListener {
+                    connectionsClient!!.acceptConnection(opponentEndpointId!!, payloadCallback)
+                    disableButtons()
+                    makeSnackbar(R.string.connection_pending)
+                }
+            }
+            "End" -> {
+                cancelBtn.setOnClickListener {
+                    switchToFragment(ReadyFragment())
+                }
+                acceptBtn.setOnClickListener {
+                    switchToFragment(GoFragment()) //TODO!
+                }
+            }
         }
-        acceptBtn.setOnClickListener {
-            connectionsClient!!.acceptConnection(opponentEndpointId!!, payloadCallback)
-            disableButtons()
-            makeSnackbar(R.string.connection_pending)
-        }
+
     }
 
     private fun switchToFragment(fragment: Fragment){
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.fragment_container, fragment)
+        fragmentTransaction.replace(R.id.fragment_container, fragment)
         fragmentTransaction.commit()
     }
 
@@ -161,6 +175,8 @@ class DuelModeActivity: FencyModeActivity(){
         setContentView(R.layout.activity_duel_mode) // do not change order
         cntFullScreen = fullscreen_content
         super.onCreate(savedInstanceState)
+
+        ludum!!.maxScore = 3
 
         connectionsClient = Nearby.getConnectionsClient(this)
 
@@ -171,6 +187,15 @@ class DuelModeActivity: FencyModeActivity(){
     fun onReady() {
         signaText.text = signum
         findSomeone()
+    }
+
+    fun onGo() {
+        sensorHandler!!.registerListeners()
+    }
+
+    private fun onEnd(){
+        sensorHandler!!.unregisterListeners()
+        enableButtons("End")
     }
 
     override fun onStart() {
@@ -213,6 +238,7 @@ class DuelModeActivity: FencyModeActivity(){
         opponentEndpointId = null
         adversatorSigna = null
         adveText.setText(R.string.dots)
+        ludum!!.reset()
     }
 
     override fun updatePlayerView(caller: Player) {
@@ -227,11 +253,29 @@ class DuelModeActivity: FencyModeActivity(){
         }
     }
 
-    override fun updateGameView() {
+    override fun updateGameView() { // do not call before onGo
         super.updateGameView()
-        //val scoreString = "${ludum!!.score1}:${ludum!!.score2}"
 
-        //TODO scoreText.text = scoreString
+
+        //end of match
+        when(ludum!!.state){
+            R.integer.GAME_DRAW -> {
+            }
+            R.integer.GAME_P1 -> {
+                scoreText.text = String.format(getString(R.string.score), ludum!!.score1, ludum!!.score2)
+            }
+            R.integer.GAME_P2 -> {
+                scoreText.text = String.format(getString(R.string.score), ludum!!.score1, ludum!!.score2)
+            }
+            R.integer.GAME_W1 -> {
+                resultText.setText(R.string.won)
+                onEnd()
+            }
+            R.integer.GAME_W2 -> {
+                resultText.setText(R.string.lost)
+                onEnd()
+            }
+        }
     }
 
     companion object {

@@ -1,10 +1,14 @@
 package disorganizzazione.fency
 
+import kotlin.math.max
+
 class Game(activity : FencyModeActivity, private val playerOne : Player, private val playerTwo : Player) : FencyModel(activity,R.integer.GAME_DRAW) {
 
     var score1 = 0
+        private set
     var score2 = 0
-
+        private set
+    var maxScore = Int.MAX_VALUE
     override var state: Int = R.integer.GAME_DRAW
         get() = super.state
         set(value) {
@@ -13,13 +17,24 @@ class Game(activity : FencyModeActivity, private val playerOne : Player, private
                     field = R.integer.GAME_DRAW
                 }
                 R.integer.GAME_P1 -> {
-                    score1++
                     field = R.integer.GAME_P1
+                    score1++
+                    if (score1 >= maxScore) //we do want recursion
+                        state = R.integer.GAME_W1
                 }
                 R.integer.GAME_P2 -> {
-                    score2++
                     field = R.integer.GAME_P2
+                    score2++
+                    if (score2 >= maxScore) //we know what we are doing
+                        state = R.integer.GAME_W2
                 }
+                R.integer.GAME_W1 -> {
+                    field = R.integer.GAME_W1
+                }
+                R.integer.GAME_W2 -> {
+                    field = R.integer.GAME_W2
+                }
+                else -> throw Exception("invalid game state")
             }
             activity.updateGameView()
         }
@@ -64,6 +79,12 @@ class Game(activity : FencyModeActivity, private val playerOne : Player, private
         }
         state = R.integer.GAME_DRAW
         return false
+    }
+
+    fun reset(){
+        score1 = 0
+        score2 = 0
+        state = R.integer.GAME_DRAW
     }
 
 }

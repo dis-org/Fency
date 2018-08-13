@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="2.5">
+    android:weightSum="3">
 
     <TextView
-        android:id="@+id/signaText"
+        android:id="@+id/resultText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -22,37 +22,19 @@
         android:textStyle="bold|italic" />
 
     <TextView
+        android:id="@+id/scoreText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.5"
-        android:fontFamily="casual"
-        android:gravity="center"
 
-        android:singleLine="true"
-        android:text="versus"
-        android:textAlignment="center"
-        android:textAllCaps="true"
-
-        android:textColor="@color/brown_ink"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        tools:ignore="HardcodedText" />
-
-    <TextView
-        android:id="@+id/adveText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:fontFamily="cursive"
+        android:fontFamily="monospace"
 
         android:gravity="center"
-        android:lines="2"
-        android:text="@string/dots"
-
+        android:singleLine="true"
         android:textAlignment="center"
         android:textColor="@color/black_overlay"
-        android:textSize="48sp"
-        android:textStyle="bold|italic"
-        tools:ignore="HardcodedText" />
+        android:textSize="128sp"
+        android:textStyle="bold"
+        tools:text=":" />
 
 </LinearLayout>

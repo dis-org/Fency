@@ -27,6 +27,9 @@
     <string name="music">Musica</string>
     <!--Duel-->
     <string name="dots">. . .</string>
+    <string name="score">%1$i:%2$i</string>
+    <string name="won">Hai vinto!</string>
+    <string name="lost">Hai perso…</string>
     <string name="error_missing_permissions">Errore: permessi insufficienti per avviare la connessione.</string>
     <!--snacks-->
     <string name="scanning">Ricerca…</string>
