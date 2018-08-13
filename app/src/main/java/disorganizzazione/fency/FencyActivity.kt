@@ -3,7 +3,7 @@ package disorganizzazione.fency
 import android.media.MediaPlayer
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.Toast
+import android.support.design.widget.Snackbar
 
 abstract class FencyActivity : AppCompatActivity(){
 
@@ -31,8 +31,8 @@ abstract class FencyActivity : AppCompatActivity(){
 
     }
 
-    protected fun makeToast(text:String){
-        Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT).show()
+    protected fun makeSnackbar(tag:Int){
+        Snackbar.make(cntFullScreen!!, getString(tag), Snackbar.LENGTH_LONG).show()
     }
 
 }

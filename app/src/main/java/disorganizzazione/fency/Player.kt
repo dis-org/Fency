@@ -1,6 +1,6 @@
 package disorganizzazione.fency
 
-class Player(activity : FencyModeActivity) : FencyModel(activity, R.integer.HIGH_STAND){
+class Player(activity : FencyModeActivity) : FencyModel(activity, R.integer.INVALID){
 
     override var state: Int = super.state
         set(to) {

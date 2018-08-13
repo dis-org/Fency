@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.annotation.CallSuper
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.view.View
 import android.widget.Toast
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
@@ -59,10 +61,13 @@ class DuelModeActivity: FencyModeActivity(){
     // Callbacks for finding other devices
     private val endpointDiscoveryCallback = object : EndpointDiscoveryCallback() {
         override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
+            makeSnackbar(R.string.endpoint_found)
             connectionsClient!!.requestConnection(signum, endpointId, connectionLifecycleCallback)
         }
 
-        override fun onEndpointLost(endpointId: String) {}
+        override fun onEndpointLost(endpointId: String) {
+            makeSnackbar(R.string.endpoint_lost)
+        }
     }
 
     // Callbacks for finding other devices
@@ -80,40 +85,76 @@ class DuelModeActivity: FencyModeActivity(){
 
             when (result.status.statusCode){
                 ConnectionsStatusCodes.STATUS_OK -> {
-                    connectionsClient!!.stopDiscovery()
-                    connectionsClient!!.stopAdvertising()
+                    makeSnackbar(R.string.connected)
 
-                    sensorHandler!!.registerListeners()
-
-                    makeToast("Connected to opponent")
+                    disableButtons()
+                    //sensorHandler!!.registerListeners() TODO
                 }
                 ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED -> {
-                    //TODO
+                    makeSnackbar(R.string.rejected)
+
+                    adveText.setText(R.string.dots)
+                    findSomeone()
                 }
                 ConnectionsStatusCodes.STATUS_ERROR -> {
+                    makeSnackbar(R.string.connection_failed)
                     //TODO
-                    makeToast("Connection attempt failed")
                 }
             }
         }
 
         override fun onDisconnected(endpointId: String) {
             resetGame()
+            findSomeone()
         }
     }
 
+    private fun findSomeone(){
+        makeSnackbar(R.string.scanning)
+
+        disableButtons()
+
+        connectionsClient!!.startAdvertising(
+                signum, packageName, connectionLifecycleCallback,
+                AdvertisingOptions.Builder().setStrategy(STRATEGY).build())
+        connectionsClient!!.startDiscovery(
+                packageName, endpointDiscoveryCallback,
+                DiscoveryOptions.Builder().setStrategy(STRATEGY).build())
+    }
     private fun onSomeoneFound(){
+
+        connectionsClient!!.stopDiscovery()
+        connectionsClient!!.stopAdvertising()
+
+        enableButtons()
+    }
+
+    private fun disableButtons(){
+        cancelBtn.setOnClickListener(null)
+        acceptBtn.setOnClickListener(null)
+        cancelBtn.visibility = View.INVISIBLE
+        acceptBtn.visibility = View.INVISIBLE
+    }
+    private fun enableButtons(){
+        cancelBtn.visibility = View.VISIBLE
+        acceptBtn.visibility = View.VISIBLE
+
         cancelBtn.setOnClickListener {
             connectionsClient!!.rejectConnection(opponentEndpointId!!)
             disableButtons()
         }
         acceptBtn.setOnClickListener {
             connectionsClient!!.acceptConnection(opponentEndpointId!!, payloadCallback)
+            disableButtons()
+            makeSnackbar(R.string.connection_pending)
         }
     }
-    private fun disableButtons(){
-        cancelBtn.setOnClickListener(null)
-        acceptBtn.setOnClickListener(null)
+
+    private fun switchToFragment(fragment: Fragment){
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.add(R.id.fragment_container, fragment)
+        fragmentTransaction.commit()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,26 +162,15 @@ class DuelModeActivity: FencyModeActivity(){
         cntFullScreen = fullscreen_content
         super.onCreate(savedInstanceState)
 
-        // Fragments handling
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        val fragment = ReadyFragment()
-        fragmentTransaction.add(R.id.fragment_container, fragment)
-        fragmentTransaction.commit()
-
         connectionsClient = Nearby.getConnectionsClient(this)
-        connectionsClient!!.startAdvertising(
-                signum, packageName, connectionLifecycleCallback,
-                AdvertisingOptions.Builder().setStrategy(STRATEGY).build())
-        connectionsClient!!.startDiscovery(
-                packageName, endpointDiscoveryCallback,
-                DiscoveryOptions.Builder().setStrategy(STRATEGY).build())
+
+        switchToFragment(ReadyFragment())
 
     }
 
     fun onReady() {
-        // TODO
         signaText.text = signum
+        findSomeone()
     }
 
     override fun onStart() {
@@ -182,7 +212,6 @@ class DuelModeActivity: FencyModeActivity(){
     private fun resetGame() {
         opponentEndpointId = null
         adversatorSigna = null
-
         adveText.setText(R.string.dots)
     }
 

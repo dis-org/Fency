@@ -28,5 +28,13 @@
     <!--Duel-->
     <string name="dots">. . .</string>
     <string name="error_missing_permissions">Errore: permessi insufficienti per avviare la connessione.</string>
+    <!--snacks-->
+    <string name="scanning">Ricerca…</string>
+    <string name="endpoint_found">Dispositivo trovato</string>
+    <string name="endpoint_lost">Dispositivo perso</string>
+    <string name="connected">Connesso</string>
+    <string name="rejected">Connessione respinta</string>
+    <string name="connection_failed">Connessione fallita</string>
+    <string name="connection_pending">In attesa di conferma</string>
 
 </resources>
