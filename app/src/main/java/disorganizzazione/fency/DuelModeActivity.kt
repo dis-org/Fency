@@ -18,58 +18,106 @@ import kotlinx.android.synthetic.main.fragment_ready.*
 
 class DuelModeActivity: FencyModeActivity(){
 
-    val signum = TriaNomina().toString()
+    companion object {
+        private const val REQUEST_CODE_REQUIRED_PERMISSIONS = 1
+        private val REQUIRED_PERMISSIONS = arrayOf(
+                Manifest.permission.BLUETOOTH,
+                Manifest.permission.BLUETOOTH_ADMIN,
+                Manifest.permission.ACCESS_WIFI_STATE,
+                Manifest.permission.CHANGE_WIFI_STATE,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+
+        private val STRATEGY = Strategy.P2P_STAR
+
+        private const val H_A_BYTE = 0.toByte()
+        private const val L_A_BYTE = 1.toByte()
+        private const val DRAW_BYTE = 2.toByte()
+        private const val SCORE_BYTE = 3.toByte()
+
+        /** Returns true if the app was granted all the permissions. Otherwise, returns false.  */
+        private fun hasPermissions(context: Context, vararg permissions: String): Boolean {
+            for (permission in permissions) {
+                if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false
+                }
+            }
+            return true
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        if (android.os.Build.VERSION.SDK_INT >= 23)
+            if (!hasPermissions(this, *REQUIRED_PERMISSIONS)) {
+                requestPermissions(REQUIRED_PERMISSIONS, REQUEST_CODE_REQUIRED_PERMISSIONS)
+            }
+    }
+
+    /** Handles user acceptance (or denial) of our permission request.  */
+    @CallSuper
+    override fun onRequestPermissionsResult(
+            requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode != REQUEST_CODE_REQUIRED_PERMISSIONS) {
+            return
+        }
+
+        for (grantResult in grantResults) {
+            if (grantResult == PackageManager.PERMISSION_DENIED) {
+                Toast.makeText(this, R.string.error_missing_permissions, Toast.LENGTH_LONG).show()
+                finish()
+                return
+            }
+        }
+        recreate()
+    }
+
+    private val signum = TriaNomina().toString()
     private var adversatorSigna: String? = null
 
     private var connectionsClient: ConnectionsClient? = null
     private var opponentEndpointId: String? = null
 
-    // Callbacks for receiving payloads
-    private val payloadCallback = object : PayloadCallback() {
-        override fun onPayloadReceived(endpointId: String, payload: Payload) {
-            val payloadByte = payload.asBytes()!![0]
-            when (payloadByte){
-                H_A_BYTE -> {
-                    adversator!!.state = R.integer.HIGH_ATTACK
-                    gameSync()
-                }
-                L_A_BYTE -> {
-                    adversator!!.state = R.integer.LOW_ATTACK
-                    gameSync()
-                }
-                DRAW_BYTE -> ludum!!.state = R.integer.GAME_DRAW
-                SCORE_BYTE -> ludum!!.state = R.integer.GAME_P1
-            }
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setContentView(R.layout.activity_duel_mode) // do not change order
+        cntFullScreen = fullscreen_content
+        super.onCreate(savedInstanceState)
 
-        override fun onPayloadTransferUpdate(endpointId: String, update: PayloadTransferUpdate) {}
-    }
+        ludum!!.maxScore = 3
 
-    fun gameSync() {
-        if(ludum!!.score2())
-            sendPayload(SCORE_BYTE)
-        else
-            sendPayload(DRAW_BYTE)
-    }
+        connectionsClient = Nearby.getConnectionsClient(this)
 
-    private fun sendPayload(byte : Byte) {
-        connectionsClient!!.sendPayload(opponentEndpointId!!,Payload.fromBytes(
-                ByteArray(1) {return@ByteArray byte}
-        ))
+        switchToFragment(ReadyFragment())
 
     }
 
-    // Callbacks for finding other devices
-    private val endpointDiscoveryCallback = object : EndpointDiscoveryCallback() {
-        override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
-            makeSnackbar(R.string.endpoint_found)
-            connectionsClient!!.requestConnection(signum, endpointId, connectionLifecycleCallback)
-        }
-
-        override fun onEndpointLost(endpointId: String) {
-            makeSnackbar(R.string.endpoint_lost)
-        }
+    private fun switchToFragment(fragment: Fragment){
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragment_container, fragment)
+        fragmentTransaction.commit()
     }
+
+    fun onReady() {
+        signaText.text = signum
+        findSomeone()
+    }
+
+    private fun findSomeone(){
+        makeSnackbar(R.string.scanning)
+
+        disableButtons()
+
+        connectionsClient!!.startAdvertising(
+                signum, packageName, connectionLifecycleCallback,
+                AdvertisingOptions.Builder().setStrategy(STRATEGY).build())
+        connectionsClient!!.startDiscovery(
+                packageName, endpointDiscoveryCallback,
+                DiscoveryOptions.Builder().setStrategy(STRATEGY).build())
+    }
+
 
     // Callbacks for finding other devices
     private val connectionLifecycleCallback = object :  ConnectionLifecycleCallback() {
@@ -110,23 +158,21 @@ class DuelModeActivity: FencyModeActivity(){
         }
     }
 
-    private fun findSomeone(){
-        makeSnackbar(R.string.scanning)
+    // Callbacks for finding other devices
+    private val endpointDiscoveryCallback = object : EndpointDiscoveryCallback() {
+        override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
+            makeSnackbar(R.string.endpoint_found)
+            connectionsClient!!.requestConnection(signum, endpointId, connectionLifecycleCallback)
+        }
 
-        disableButtons()
-
-        connectionsClient!!.startAdvertising(
-                signum, packageName, connectionLifecycleCallback,
-                AdvertisingOptions.Builder().setStrategy(STRATEGY).build())
-        connectionsClient!!.startDiscovery(
-                packageName, endpointDiscoveryCallback,
-                DiscoveryOptions.Builder().setStrategy(STRATEGY).build())
+        override fun onEndpointLost(endpointId: String) {
+            makeSnackbar(R.string.endpoint_lost)
+        }
     }
-    private fun onSomeoneFound(){
 
+    private fun onSomeoneFound(){
         connectionsClient!!.stopDiscovery()
         connectionsClient!!.stopAdvertising()
-
         enableButtons("Ready")
     }
 
@@ -136,10 +182,10 @@ class DuelModeActivity: FencyModeActivity(){
         cancelBtn.visibility = View.INVISIBLE
         acceptBtn.visibility = View.INVISIBLE
     }
+
     private fun enableButtons(state : String){
         cancelBtn.visibility = View.VISIBLE
         acceptBtn.visibility = View.VISIBLE
-
         when (state){
             "Ready" -> {
                 cancelBtn.setOnClickListener {
@@ -161,84 +207,10 @@ class DuelModeActivity: FencyModeActivity(){
                 }
             }
         }
-
-    }
-
-    private fun switchToFragment(fragment: Fragment){
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, fragment)
-        fragmentTransaction.commit()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_duel_mode) // do not change order
-        cntFullScreen = fullscreen_content
-        super.onCreate(savedInstanceState)
-
-        ludum!!.maxScore = 3
-
-        connectionsClient = Nearby.getConnectionsClient(this)
-
-        switchToFragment(ReadyFragment())
-
-    }
-
-    fun onReady() {
-        signaText.text = signum
-        findSomeone()
     }
 
     fun onGo() {
         sensorHandler!!.registerListeners()
-    }
-
-    private fun onEnd(){
-        sensorHandler!!.unregisterListeners()
-        enableButtons("End")
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        if (android.os.Build.VERSION.SDK_INT >= 23)
-            if (!hasPermissions(this, *REQUIRED_PERMISSIONS)) {
-                requestPermissions(REQUIRED_PERMISSIONS, REQUEST_CODE_REQUIRED_PERMISSIONS)
-            }
-    }
-
-    override fun onPause() {
-        connectionsClient?.stopAllEndpoints()
-        resetGame()
-
-        super.onPause()
-    }
-
-    /** Handles user acceptance (or denial) of our permission request.  */
-    @CallSuper
-    override fun onRequestPermissionsResult(
-            requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode != REQUEST_CODE_REQUIRED_PERMISSIONS) {
-            return
-        }
-
-        for (grantResult in grantResults) {
-            if (grantResult == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(this, R.string.error_missing_permissions, Toast.LENGTH_LONG).show()
-                finish()
-                return
-            }
-        }
-        recreate()
-    }
-
-    private fun resetGame() {
-        opponentEndpointId = null
-        adversatorSigna = null
-        adveText.setText(R.string.dots)
-        ludum!!.reset()
     }
 
     override fun updatePlayerView(caller: Player) {
@@ -253,9 +225,42 @@ class DuelModeActivity: FencyModeActivity(){
         }
     }
 
+    private fun sendPayload(byte : Byte) {
+        connectionsClient!!.sendPayload(opponentEndpointId!!,Payload.fromBytes(
+                ByteArray(1) {return@ByteArray byte}
+        ))
+
+    }
+
+    // Callbacks for receiving payloads
+    private val payloadCallback = object : PayloadCallback() {
+        override fun onPayloadReceived(endpointId: String, payload: Payload) {
+            val payloadByte = payload.asBytes()!![0]
+            when (payloadByte){
+                H_A_BYTE -> {
+                    adversator!!.state = R.integer.HIGH_ATTACK
+                    gameSync()
+                }
+                L_A_BYTE -> {
+                    adversator!!.state = R.integer.LOW_ATTACK
+                    gameSync()
+                }
+                DRAW_BYTE -> ludum!!.state = R.integer.GAME_DRAW
+                SCORE_BYTE -> ludum!!.state = R.integer.GAME_P1
+            }
+        }
+        override fun onPayloadTransferUpdate(endpointId: String, update: PayloadTransferUpdate) {}
+    }
+
+    fun gameSync() {
+        if(ludum!!.score2())
+            sendPayload(SCORE_BYTE)
+        else
+            sendPayload(DRAW_BYTE)
+    }
+
     override fun updateGameView() { // do not call before onGo
         super.updateGameView()
-
 
         //end of match
         when(ludum!!.state){
@@ -278,30 +283,23 @@ class DuelModeActivity: FencyModeActivity(){
         }
     }
 
-    companion object {
-        private val STRATEGY = Strategy.P2P_STAR
-        private const val REQUEST_CODE_REQUIRED_PERMISSIONS = 1
-        private val REQUIRED_PERMISSIONS = arrayOf(
-        Manifest.permission.BLUETOOTH,
-        Manifest.permission.BLUETOOTH_ADMIN,
-        Manifest.permission.ACCESS_WIFI_STATE,
-        Manifest.permission.CHANGE_WIFI_STATE,
-        Manifest.permission.ACCESS_COARSE_LOCATION)
-
-        private const val H_A_BYTE = 0.toByte()
-        private const val L_A_BYTE = 1.toByte()
-        private const val DRAW_BYTE = 2.toByte()
-        private const val SCORE_BYTE = 3.toByte()
-
-        /** Returns true if the app was granted all the permissions. Otherwise, returns false.  */
-        private fun hasPermissions(context: Context, vararg permissions: String): Boolean {
-            for (permission in permissions) {
-                if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false
-                }
-            }
-            return true
-        }
-
+    private fun onEnd(){
+        sensorHandler!!.unregisterListeners()
+        enableButtons("End")
     }
+
+    private fun resetGame() {
+        opponentEndpointId = null
+        adversatorSigna = null
+        adveText.setText(R.string.dots)
+        ludum!!.reset()
+    }
+
+    override fun onPause() {
+        connectionsClient?.stopAllEndpoints()
+        resetGame()
+
+        super.onPause()
+    }
+
 }
