@@ -33,24 +33,11 @@ abstract class FencyModeActivity: FencyActivity() {
 
         sensorHandler = SensorHandler(this, usor!!)
 
-        //sensorHandler!!.registerListeners() TODO: fix in mode activities subclasses
-
-        audioPlayerEffects = MediaPlayer.create(this, R.raw.sword_clash)
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-        //sensorHandler!!.registerListeners() TODO: fix in mode activities subclasses
-        //audioPlayerMusic = null
-        audioPlayerEffects = MediaPlayer.create(this, R.raw.sword_clash)
     }
 
      override fun onPause() {
         super.onPause()
         sensorHandler?.unregisterListeners()
-        audioPlayerMusic?.release()
-        audioPlayerEffects?.release()
     }
 
     override fun onStop() {
@@ -70,7 +57,9 @@ abstract class FencyModeActivity: FencyActivity() {
     }
 
     open fun updateGameView() {
-
+        if (ludum!!.state == R.integer.GAME_DRAW) {
+            vibrate()
+        }
     }
 
     protected fun vibrate(){

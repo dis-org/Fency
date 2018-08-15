@@ -3,9 +3,9 @@
     <string name="title_activity_home">Fency!</string>
     <string name="mainLogo">Fency</string>
     <string name="fencyTitle">Fency!</string>
-    <string name="tutorialbtnText">- Tutorial</string>
-    <string name="practicebtnText">- Pratica</string>
-    <string name="duelbtnText">- Duello</string>
+    <string name="tutorialbtnText">Tutorial</string>
+    <string name="practicebtnText">Pratica</string>
+    <string name="duelbtnText">Duello</string>
     <string name="fency_logo_des">Fency!</string>
     <string name="practice_btn_des">Modalità di pratica</string>
     <!--Tutorial-->
@@ -31,13 +31,14 @@
     <string name="won">Hai vinto!</string>
     <string name="lost">Hai perso…</string>
     <string name="error_missing_permissions">Errore: permessi insufficienti per avviare la connessione.</string>
-    <!--snacks-->
-    <string name="scanning">Ricerca…</string>
-    <string name="endpoint_found">Dispositivo trovato</string>
-    <string name="endpoint_lost">Dispositivo perso</string>
-    <string name="connected">Connesso</string>
-    <string name="rejected">Connessione respinta</string>
-    <string name="connection_failed">Connessione fallita</string>
-    <string name="connection_pending">In attesa di conferma</string>
+    <!--log-->
+    <string name="scanning">ricerca dispositivi…</string>
+    <string name="endpoint_found">dispositivo trovato</string>
+    <string name="endpoint_lost">dispositivo perso</string>
+    <string name="connected">dispositivo connesso</string>
+    <string name="rejected">connessione respinta</string>
+    <string name="connection_failed">connessione fallita</string>
+    <string name="connection_pending">in attesa di conferma</string>
+
 
 </resources>

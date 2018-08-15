@@ -7,14 +7,15 @@ import android.os.Bundle
 import android.support.annotation.CallSuper
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.view.View
 import android.widget.Toast
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
 
-import kotlinx.android.synthetic.main.activity_duel_mode.*
 import kotlinx.android.synthetic.main.fragment_go.*
 import kotlinx.android.synthetic.main.fragment_ready.*
+import kotlinx.android.synthetic.main.fragment_buttons.*
+
+import kotlinx.android.synthetic.main.activity_duel_mode.*
 
 class DuelModeActivity: FencyModeActivity(){
 
@@ -80,35 +81,47 @@ class DuelModeActivity: FencyModeActivity(){
     private var connectionsClient: ConnectionsClient? = null
     private var opponentEndpointId: String? = null
 
+    private var log: LogFragment? = null
+    private var buttons: ButtonsFragment? = null
+
+    private var state: String = "Ready"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_duel_mode) // do not change order
         cntFullScreen = fullscreen_content
         super.onCreate(savedInstanceState)
 
-        ludum!!.maxScore = 3
-
         connectionsClient = Nearby.getConnectionsClient(this)
 
-        switchToFragment(ReadyFragment())
+        log = LogFragment()
+        buttons = ButtonsFragment()
 
+        replaceBottomFragment(log!!) //to be done first
+        replaceMainFragment(ReadyFragment())
     }
 
-    private fun switchToFragment(fragment: Fragment){
+    private fun replaceBottomFragment(fragment: Fragment){
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, fragment)
+        fragmentTransaction.replace(R.id.bottom_container, fragment)
+        fragmentTransaction.commit()
+    }
+
+    private fun replaceMainFragment(fragment: Fragment){
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.main_container, fragment)
         fragmentTransaction.commit()
     }
 
     fun onReady() {
+        state = "Ready"
         signaText.text = signum
         findSomeone()
     }
 
     private fun findSomeone(){
-        makeSnackbar(R.string.scanning)
-
-        disableButtons()
+        log!!.append(R.string.scanning)
 
         connectionsClient!!.startAdvertising(
                 signum, packageName, connectionLifecycleCallback,
@@ -117,7 +130,6 @@ class DuelModeActivity: FencyModeActivity(){
                 packageName, endpointDiscoveryCallback,
                 DiscoveryOptions.Builder().setStrategy(STRATEGY).build())
     }
-
 
     // Callbacks for finding other devices
     private val connectionLifecycleCallback = object :  ConnectionLifecycleCallback() {
@@ -134,19 +146,19 @@ class DuelModeActivity: FencyModeActivity(){
 
             when (result.status.statusCode){
                 ConnectionsStatusCodes.STATUS_OK -> {
-                    makeSnackbar(R.string.connected)
+                    log!!.submit(R.string.connected)
 
-                    disableButtons()
-                    switchToFragment(GoFragment())
+                    replaceBottomFragment(log!!)
+                    replaceMainFragment(GoFragment())
                 }
                 ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED -> {
-                    makeSnackbar(R.string.rejected)
+                    log!!.submit(R.string.rejected)
 
                     adveText.setText(R.string.dots)
                     findSomeone()
                 }
                 ConnectionsStatusCodes.STATUS_ERROR -> {
-                    makeSnackbar(R.string.connection_failed)
+                    log!!.submit(R.string.connection_failed)
                     //TODO
                 }
             }
@@ -161,56 +173,49 @@ class DuelModeActivity: FencyModeActivity(){
     // Callbacks for finding other devices
     private val endpointDiscoveryCallback = object : EndpointDiscoveryCallback() {
         override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
-            makeSnackbar(R.string.endpoint_found)
+            log!!.submit(R.string.endpoint_found)
             connectionsClient!!.requestConnection(signum, endpointId, connectionLifecycleCallback)
         }
 
         override fun onEndpointLost(endpointId: String) {
-            makeSnackbar(R.string.endpoint_lost)
+            log!!.submit(R.string.endpoint_lost)
         }
     }
 
     private fun onSomeoneFound(){
         connectionsClient!!.stopDiscovery()
         connectionsClient!!.stopAdvertising()
-        enableButtons("Ready")
+        replaceBottomFragment(buttons!!)
     }
 
-    private fun disableButtons(){
-        cancelBtn.setOnClickListener(null)
-        acceptBtn.setOnClickListener(null)
-        cancelBtn.visibility = View.INVISIBLE
-        acceptBtn.visibility = View.INVISIBLE
-    }
-
-    private fun enableButtons(state : String){
-        cancelBtn.visibility = View.VISIBLE
-        acceptBtn.visibility = View.VISIBLE
+    fun onButtonsCreated() {
         when (state){
             "Ready" -> {
                 cancelBtn.setOnClickListener {
                     connectionsClient!!.rejectConnection(opponentEndpointId!!)
-                    disableButtons()
+                    replaceBottomFragment(log!!)
                 }
                 acceptBtn.setOnClickListener {
                     connectionsClient!!.acceptConnection(opponentEndpointId!!, payloadCallback)
-                    disableButtons()
-                    makeSnackbar(R.string.connection_pending)
+                    replaceBottomFragment(log!!)
+                    log!!.submit(R.string.connection_pending)
                 }
             }
             "End" -> {
                 cancelBtn.setOnClickListener {
-                    switchToFragment(ReadyFragment())
+                    replaceMainFragment(ReadyFragment())
                 }
                 acceptBtn.setOnClickListener {
-                    switchToFragment(GoFragment()) //TODO!
+                    replaceMainFragment(GoFragment()) //TODO!
                 }
             }
         }
     }
 
     fun onGo() {
+        state = "Go"
         sensorHandler!!.registerListeners()
+        scoreText.text = "0:0"
     }
 
     override fun updatePlayerView(caller: Player) {
@@ -284,8 +289,9 @@ class DuelModeActivity: FencyModeActivity(){
     }
 
     private fun onEnd(){
+        state = "End"
         sensorHandler!!.unregisterListeners()
-        enableButtons("End")
+        replaceBottomFragment(buttons!!)
     }
 
     private fun resetGame() {

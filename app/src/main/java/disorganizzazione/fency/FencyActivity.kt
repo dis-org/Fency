@@ -31,8 +31,4 @@ abstract class FencyActivity : AppCompatActivity(){
 
     }
 
-    protected fun makeSnackbar(tag:Int){
-        Snackbar.make(cntFullScreen!!, getString(tag), Snackbar.LENGTH_LONG).show()
-    }
-
 }
