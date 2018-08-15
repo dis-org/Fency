@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.annotation.CallSuper
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.view.View
 import android.widget.Toast
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
@@ -95,16 +96,13 @@ class DuelModeActivity: FencyModeActivity(){
 
         log = LogFragment()
         buttons = ButtonsFragment()
-
-        replaceBottomFragment(log!!) //to be done first
-        replaceMainFragment(ReadyFragment())
-    }
-
-    private fun replaceBottomFragment(fragment: Fragment){
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.bottom_container, fragment)
+        fragmentTransaction.add(R.id.bottom_container, buttons!!)
+        fragmentTransaction.add(R.id.bottom_container, log!!)
         fragmentTransaction.commit()
+
+        replaceMainFragment(ReadyFragment())
     }
 
     private fun replaceMainFragment(fragment: Fragment){
@@ -148,7 +146,7 @@ class DuelModeActivity: FencyModeActivity(){
                 ConnectionsStatusCodes.STATUS_OK -> {
                     log!!.submit(R.string.connected)
 
-                    replaceBottomFragment(log!!)
+                    disableButtons()
                     replaceMainFragment(GoFragment())
                 }
                 ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED -> {
@@ -185,7 +183,7 @@ class DuelModeActivity: FencyModeActivity(){
     private fun onSomeoneFound(){
         connectionsClient!!.stopDiscovery()
         connectionsClient!!.stopAdvertising()
-        replaceBottomFragment(buttons!!)
+        enableButtons()
     }
 
     fun onButtonsCreated() {
@@ -193,11 +191,45 @@ class DuelModeActivity: FencyModeActivity(){
             "Ready" -> {
                 cancelBtn.setOnClickListener {
                     connectionsClient!!.rejectConnection(opponentEndpointId!!)
-                    replaceBottomFragment(log!!)
+                    disableButtons()
                 }
                 acceptBtn.setOnClickListener {
                     connectionsClient!!.acceptConnection(opponentEndpointId!!, payloadCallback)
-                    replaceBottomFragment(log!!)
+                    disableButtons()
+                    log!!.submit(R.string.connection_pending)
+                }
+            }
+            "End" -> {
+                cancelBtn.setOnClickListener {
+                    replaceMainFragment(ReadyFragment())
+                }
+                acceptBtn.setOnClickListener {
+                    replaceMainFragment(GoFragment()) //TODO!
+                }
+            }
+        }
+    }
+
+    private fun disableButtons(){
+        cancelBtn.setOnClickListener(null)
+        acceptBtn.setOnClickListener(null)
+        cancelBtn.visibility = View.INVISIBLE
+        acceptBtn.visibility = View.INVISIBLE
+        //TODO: hide log
+    }
+
+    private fun enableButtons(){
+        cancelBtn.visibility = View.VISIBLE
+        acceptBtn.visibility = View.VISIBLE
+        when (state){
+            "Ready" -> {
+                cancelBtn.setOnClickListener {
+                    connectionsClient!!.rejectConnection(opponentEndpointId!!)
+                    disableButtons()
+                }
+                acceptBtn.setOnClickListener {
+                    connectionsClient!!.acceptConnection(opponentEndpointId!!, payloadCallback)
+                    disableButtons()
                     log!!.submit(R.string.connection_pending)
                 }
             }
@@ -291,7 +323,7 @@ class DuelModeActivity: FencyModeActivity(){
     private fun onEnd(){
         state = "End"
         sensorHandler!!.unregisterListeners()
-        replaceBottomFragment(buttons!!)
+        enableButtons()
     }
 
     private fun resetGame() {
