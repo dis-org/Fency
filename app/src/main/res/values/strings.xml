@@ -8,6 +8,7 @@
     <string name="duelbtnText">Duello</string>
     <string name="fency_logo_des">Fency!</string>
     <string name="practice_btn_des">Modalità di pratica</string>
+    <string name="music">Musica</string>
     <!--Tutorial-->
     <string name="tutorialTitle">Come si gioca</string>
     <string name="tipGuard">Inclina il dispositivo per cambiare la posizione di guardia</string>
@@ -24,21 +25,21 @@
     <!--Practice approbationes-->
     <string name="success">Bravo</string>
     <string name="failure">Riprova</string>
-    <string name="music">Musica</string>
     <!--Duel-->
-    <string name="dots">. . .</string>
+    <string name="dots">. . . ?</string>
     <string name="score">%1$i:%2$i</string>
     <string name="won">Hai vinto!</string>
     <string name="lost">Hai perso…</string>
     <string name="error_missing_permissions">Errore: permessi insufficienti per avviare la connessione.</string>
     <!--log-->
     <string name="scanning">ricerca dispositivi…</string>
-    <string name="endpoint_found">dispositivo trovato</string>
-    <string name="endpoint_lost">dispositivo perso</string>
-    <string name="connected">dispositivo connesso</string>
-    <string name="rejected">connessione respinta</string>
-    <string name="connection_failed">connessione fallita</string>
-    <string name="connection_pending">in attesa di conferma</string>
+    <string name="endpoint_found">dispositivo trovato, connessione…</string>
+    <string name="endpoint_lost">dispositivo perso, ricerca…</string>
+    <string name="connected">connessione riuscita!</string>
+    <string name="disconnected">connessione persa</string>
+    <string name="rejected">connessione respinta, ricerca…</string>
+    <string name="connection_failed">connessione fallita, ricerca…</string>
+    <string name="connection_pending">in attesa di conferma…</string>
 
 
 </resources>
