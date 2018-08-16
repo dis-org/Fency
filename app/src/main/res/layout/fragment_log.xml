@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="bottom"
-    android:orientation="horizontal"
-    android:background="#000000">
-
+    android:background="#000000"
+    android:id="@+id/logContainer">
 
     <TextView
         android:id="@+id/logView"
@@ -13,4 +11,4 @@
         android:layout_height="match_parent"
         android:fontFamily="monospace"/>
 
-</LinearLayout>
+</FrameLayout>

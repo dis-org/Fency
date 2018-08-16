@@ -13,6 +13,7 @@ import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
 
 import kotlinx.android.synthetic.main.fragment_go.*
+import kotlinx.android.synthetic.main.fragment_log.*
 import kotlinx.android.synthetic.main.fragment_ready.*
 import kotlinx.android.synthetic.main.fragment_buttons.*
 
@@ -82,8 +83,7 @@ class DuelModeActivity: FencyModeActivity(){
     private var connectionsClient: ConnectionsClient? = null
     private var opponentEndpointId: String? = null
 
-    private var log: LogFragment? = null
-    private var buttons: ButtonsFragment? = null
+    private var logMessage: String = ""
 
     private var state: String = "Ready"
 
@@ -93,14 +93,6 @@ class DuelModeActivity: FencyModeActivity(){
         super.onCreate(savedInstanceState)
 
         connectionsClient = Nearby.getConnectionsClient(this)
-
-        log = LogFragment()
-        buttons = ButtonsFragment()
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.bottom_container, buttons!!)
-        fragmentTransaction.add(R.id.bottom_container, log!!)
-        fragmentTransaction.commit()
 
         replaceMainFragment(ReadyFragment())
     }
@@ -112,6 +104,13 @@ class DuelModeActivity: FencyModeActivity(){
         fragmentTransaction.commit()
     }
 
+    private fun replaceBottomFragment(fragment: Fragment){
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.bottom_container, fragment)
+        fragmentTransaction.commit()
+    }
+
     fun onReady() {
         state = "Ready"
         signaText.text = signum
@@ -119,7 +118,7 @@ class DuelModeActivity: FencyModeActivity(){
     }
 
     private fun findSomeone(){
-        log!!.append(R.string.scanning)
+        append(R.string.scanning)
 
         connectionsClient!!.startAdvertising(
                 signum, packageName, connectionLifecycleCallback,
@@ -127,6 +126,26 @@ class DuelModeActivity: FencyModeActivity(){
         connectionsClient!!.startDiscovery(
                 packageName, endpointDiscoveryCallback,
                 DiscoveryOptions.Builder().setStrategy(STRATEGY).build())
+    }
+
+    private fun append(tag: Int) {
+        logMessage = "$logMessage${getText(tag)} "
+        displayLog()
+    }
+
+    private fun submit(tag: Int) {
+        logMessage = "$logMessage\n${getText(tag)} "
+        displayLog()
+    }
+
+    private fun displayLog() {
+        if(logView != null)
+            logView.text = logMessage
+        else replaceBottomFragment(LogFragment())
+    }
+
+    fun onLogCreated() {
+        logView.text = logMessage
     }
 
     // Callbacks for finding other devices
@@ -144,25 +163,26 @@ class DuelModeActivity: FencyModeActivity(){
 
             when (result.status.statusCode){
                 ConnectionsStatusCodes.STATUS_OK -> {
-                    log!!.submit(R.string.connected)
+                    submit(R.string.connected)
 
                     disableButtons()
                     replaceMainFragment(GoFragment())
                 }
                 ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED -> {
-                    log!!.submit(R.string.rejected)
+                    submit(R.string.rejected)
 
                     adveText.setText(R.string.dots)
                     findSomeone()
                 }
                 ConnectionsStatusCodes.STATUS_ERROR -> {
-                    log!!.submit(R.string.connection_failed)
+                    submit(R.string.connection_failed)
                     //TODO
                 }
             }
         }
 
         override fun onDisconnected(endpointId: String) {
+            submit(R.string.disconnected)
             resetGame()
             findSomeone()
         }
@@ -171,23 +191,37 @@ class DuelModeActivity: FencyModeActivity(){
     // Callbacks for finding other devices
     private val endpointDiscoveryCallback = object : EndpointDiscoveryCallback() {
         override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
-            log!!.submit(R.string.endpoint_found)
+            submit(R.string.endpoint_found)
             connectionsClient!!.requestConnection(signum, endpointId, connectionLifecycleCallback)
+
         }
 
         override fun onEndpointLost(endpointId: String) {
-            log!!.submit(R.string.endpoint_lost)
+            submit(R.string.endpoint_lost)
         }
     }
 
     private fun onSomeoneFound(){
         connectionsClient!!.stopDiscovery()
         connectionsClient!!.stopAdvertising()
-        enableButtons()
+        displayButtons()
+    }
+
+    private fun displayButtons(){
+        if(buttonsContainer != null) {
+            enableButtons()
+        }
+        else replaceBottomFragment(ButtonsFragment())
     }
 
     fun onButtonsCreated() {
-        when (state){
+        enableButtons()
+    }
+
+    private fun enableButtons() {
+        cancelBtn.visibility = View.VISIBLE
+        acceptBtn.visibility = View.VISIBLE
+        when (state) {
             "Ready" -> {
                 cancelBtn.setOnClickListener {
                     connectionsClient!!.rejectConnection(opponentEndpointId!!)
@@ -196,7 +230,7 @@ class DuelModeActivity: FencyModeActivity(){
                 acceptBtn.setOnClickListener {
                     connectionsClient!!.acceptConnection(opponentEndpointId!!, payloadCallback)
                     disableButtons()
-                    log!!.submit(R.string.connection_pending)
+                    submit(R.string.connection_pending)
                 }
             }
             "End" -> {
@@ -215,33 +249,7 @@ class DuelModeActivity: FencyModeActivity(){
         acceptBtn.setOnClickListener(null)
         cancelBtn.visibility = View.INVISIBLE
         acceptBtn.visibility = View.INVISIBLE
-        //TODO: hide log
-    }
-
-    private fun enableButtons(){
-        cancelBtn.visibility = View.VISIBLE
-        acceptBtn.visibility = View.VISIBLE
-        when (state){
-            "Ready" -> {
-                cancelBtn.setOnClickListener {
-                    connectionsClient!!.rejectConnection(opponentEndpointId!!)
-                    disableButtons()
-                }
-                acceptBtn.setOnClickListener {
-                    connectionsClient!!.acceptConnection(opponentEndpointId!!, payloadCallback)
-                    disableButtons()
-                    log!!.submit(R.string.connection_pending)
-                }
-            }
-            "End" -> {
-                cancelBtn.setOnClickListener {
-                    replaceMainFragment(ReadyFragment())
-                }
-                acceptBtn.setOnClickListener {
-                    replaceMainFragment(GoFragment()) //TODO!
-                }
-            }
-        }
+        displayLog()
     }
 
     fun onGo() {
@@ -323,7 +331,7 @@ class DuelModeActivity: FencyModeActivity(){
     private fun onEnd(){
         state = "End"
         sensorHandler!!.unregisterListeners()
-        enableButtons()
+        displayButtons()
     }
 
     private fun resetGame() {
@@ -335,8 +343,8 @@ class DuelModeActivity: FencyModeActivity(){
 
     override fun onPause() {
         connectionsClient?.stopAllEndpoints()
-        resetGame()
-
+        connectionsClient?.stopAdvertising()
+        connectionsClient?.stopDiscovery()
         super.onPause()
     }
 

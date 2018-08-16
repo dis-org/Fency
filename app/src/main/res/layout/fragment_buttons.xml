@@ -5,7 +5,8 @@
     android:layout_marginBottom="16dp"
     android:layout_weight="1"
     android:gravity="bottom"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:id="@+id/buttonsContainer">
 
     <ImageView
         android:id="@+id/cancelBtn"
