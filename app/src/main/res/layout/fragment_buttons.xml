@@ -15,7 +15,7 @@
         android:layout_weight=".5"
         android:alpha="0.8"
         android:gravity="center"
-        android:src="@mipmap/icons_duel_cancel" />
+        android:src="@mipmap/fency_duel_button_back" />
 
     <ImageView
         android:id="@+id/acceptBtn"
@@ -25,6 +25,6 @@
         android:layout_weight=".5"
         android:alpha="0.8"
         android:gravity="center"
-        android:src="@mipmap/icons_duel_accept" />
+        android:src="@mipmap/fency_duel_button_next" />
 
 </LinearLayout>
