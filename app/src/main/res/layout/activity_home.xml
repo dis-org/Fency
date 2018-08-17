@@ -7,21 +7,15 @@
     tools:context=".HomeActivity"
     android:id="@+id/fullscreen_content">
 
-    <CheckBox
-        android:id="@+id/audioBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/btnTutorial"
+    <ImageView
+        android:id="@+id/btnMusic"
+        android:layout_width="52dp"
+        android:layout_height="63dp"
         android:layout_alignParentBottom="true"
-        android:layout_gravity="top"
-        android:layout_marginBottom="103dp"
-        android:checked="true"
-        android:fontFamily="casual"
-        android:text="@string/music"
-        android:textAllCaps="false"
-        android:textColor="@color/brown_ink"
-        android:textSize="18sp"
-        tools:layout_editor_absoluteX="8dp" />
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="32dp"
+        android:src="@mipmap/music_button_on" />
 
     <ImageView
         android:id="@+id/ivLogo"
