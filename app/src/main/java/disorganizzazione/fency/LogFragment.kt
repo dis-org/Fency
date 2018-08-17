@@ -14,9 +14,4 @@ class LogFragment : Fragment(){
         return inflater.inflate(R.layout.fragment_log, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        (activity as DuelModeActivity).onLogCreated()
-    }
 }
