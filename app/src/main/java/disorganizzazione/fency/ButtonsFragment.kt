@@ -14,10 +14,4 @@ class ButtonsFragment : Fragment(){
         return inflater.inflate(R.layout.fragment_buttons, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        (activity as DuelModeActivity).onButtonsCreated()
-    }
-
 }

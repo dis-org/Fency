@@ -87,6 +87,11 @@ class DuelModeActivity: FencyModeActivity(){
 
     private var state: String = "Ready"
 
+    private var log: LogFragment? = null
+    private var buttons: ButtonsFragment? = null
+
+    private val fragmentManager = supportFragmentManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_duel_mode) // do not change order
         cntFullScreen = fullscreen_content
@@ -94,21 +99,40 @@ class DuelModeActivity: FencyModeActivity(){
 
         connectionsClient = Nearby.getConnectionsClient(this)
 
+        log = LogFragment()
+        buttons = ButtonsFragment()
+
+        addBottomFragments()
         replaceMainFragment(ReadyFragment())
     }
 
+    private fun addBottomFragments(){
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.add(R.id.bottom_container, buttons!!)
+        fragmentTransaction.add(R.id.bottom_container, log!!)
+        fragmentTransaction.commit()
+    }
+
     private fun replaceMainFragment(fragment: Fragment){
-        val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.main_container, fragment)
         fragmentTransaction.commit()
     }
 
-    private fun replaceBottomFragment(fragment: Fragment){
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.bottom_container, fragment)
-        fragmentTransaction.commit()
+    private fun showLog(){
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                .show(log!!)
+                .hide(buttons!!)
+                .commit()
+    }
+
+    private fun showButtons() {
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                .show(buttons!!)
+                .hide(log!!)
+                .commit()
     }
 
     fun onReady() {
@@ -139,14 +163,10 @@ class DuelModeActivity: FencyModeActivity(){
     }
 
     private fun displayLog() {
-        if(logView != null)
-            logView.text = logMessage
-        else replaceBottomFragment(LogFragment())
+        logView.text = logMessage
+        showLog()
     }
 
-    fun onLogCreated() {
-        logView.text = logMessage
-    }
 
     // Callbacks for finding other devices
     private val connectionLifecycleCallback = object :  ConnectionLifecycleCallback() {
@@ -208,14 +228,8 @@ class DuelModeActivity: FencyModeActivity(){
     }
 
     private fun displayButtons(){
-        if(buttonsContainer != null) {
-            enableButtons()
-        }
-        else replaceBottomFragment(ButtonsFragment())
-    }
-
-    fun onButtonsCreated() {
         enableButtons()
+        showButtons()
     }
 
     private fun enableButtons() {
