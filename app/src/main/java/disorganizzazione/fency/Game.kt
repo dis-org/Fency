@@ -8,7 +8,8 @@ class Game(activity : FencyModeActivity, private val playerOne : Player, private
         private set
     var score2 = 0
         private set
-    var maxScore = Int.MAX_VALUE
+    private var maxScore = Int.MAX_VALUE
+
     override var state: Int = R.integer.GAME_DRAW
         get() = super.state
         set(value) {
