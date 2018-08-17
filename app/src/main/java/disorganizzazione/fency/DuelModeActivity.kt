@@ -162,11 +162,16 @@ class DuelModeActivity: FencyModeActivity(){
         displayLog()
     }
 
-    private fun displayLog() {
-        logView.text = logMessage
-        showLog()
+    private fun debug(msg: String) {
+        logMessage = "$logMessage\n$msg "
+        displayLog()
     }
 
+    private fun displayLog() {
+        logView.text = logMessage
+        logView.post{logContainer.smoothScrollTo(0, logView.bottom)}
+        showLog()
+    }
 
     // Callbacks for finding other devices
     private val connectionLifecycleCallback = object :  ConnectionLifecycleCallback() {
@@ -278,8 +283,10 @@ class DuelModeActivity: FencyModeActivity(){
         if(caller == usor) {
             if (status == R.integer.HIGH_ATTACK ){
                 sendPayload(H_A_BYTE)
+                debug("out: h_a")
             } else if (status == R.integer.LOW_ATTACK) {
                 sendPayload(L_A_BYTE)
+                debug("out: l_a")
             }
         }
     }
@@ -297,25 +304,37 @@ class DuelModeActivity: FencyModeActivity(){
             val payloadByte = payload.asBytes()!![0]
             when (payloadByte){
                 H_A_BYTE -> {
+                    debug("in: h_a")
                     adversator!!.state = R.integer.HIGH_ATTACK
                     gameSync()
                 }
                 L_A_BYTE -> {
+                    debug("in: l_a")
                     adversator!!.state = R.integer.LOW_ATTACK
                     gameSync()
                 }
-                DRAW_BYTE -> ludum!!.state = R.integer.GAME_DRAW
-                SCORE_BYTE -> ludum!!.state = R.integer.GAME_P1
+                DRAW_BYTE ->{
+                    debug("in: draw")
+                    ludum!!.state = R.integer.GAME_DRAW
+                }
+                SCORE_BYTE ->{
+                    debug("in: score")
+                    ludum!!.state = R.integer.GAME_P1
+                }
             }
         }
         override fun onPayloadTransferUpdate(endpointId: String, update: PayloadTransferUpdate) {}
     }
 
     fun gameSync() {
-        if(ludum!!.score2())
+        if(ludum!!.score2()) {
             sendPayload(SCORE_BYTE)
-        else
+            debug("out: score")
+        }
+        else {
             sendPayload(DRAW_BYTE)
+            debug("out: draw")
+        }
     }
 
     override fun updateGameView() { // do not call before onGo
@@ -326,21 +345,23 @@ class DuelModeActivity: FencyModeActivity(){
 
         when(ludum!!.state){
             R.integer.GAME_DRAW -> {
-                Toast.makeText(applicationContext, "draw!", Toast.LENGTH_SHORT).show()
+                debug("game: draw")
             }
             R.integer.GAME_P1 -> {
-                scoreText.text = String.format(getString(R.string.score), ludum!!.score1, ludum!!.score2)
-                Toast.makeText(applicationContext, "p1!", Toast.LENGTH_SHORT).show()
+                scoreText.text = ludum!!.toString()
+                debug("game: p1")
             }
             R.integer.GAME_P2 -> {
-                scoreText.text = String.format(getString(R.string.score), ludum!!.score1, ludum!!.score2)
-                Toast.makeText(applicationContext, "p2!", Toast.LENGTH_SHORT).show()
+                scoreText.text = ludum!!.toString()
+                debug("game: p2")
             }
             R.integer.GAME_W1 -> {
+                debug("game: w1")
                 resultText.setText(R.string.won)
                 onEnd()
             }
             R.integer.GAME_W2 -> {
+                debug("game: w1")
                 resultText.setText(R.string.lost)
                 onEnd()
             }

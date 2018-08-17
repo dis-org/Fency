@@ -88,4 +88,8 @@ class Game(activity : FencyModeActivity, private val playerOne : Player, private
         state = R.integer.GAME_DRAW
     }
 
+    override fun toString(): String {
+        return "$score1:$score2"
+    }
+
 }
