@@ -1,12 +1,13 @@
 package disorganizzazione.fency
 
 import android.content.Intent
-import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : FencyActivity() {
+
+    private var musicOn = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_home) // do not change order
@@ -28,13 +29,15 @@ class HomeActivity : FencyActivity() {
             startActivity(Intent(this, DuelModeActivity::class.java))
         }
 
-        audioBox.setOnClickListener {
-            if (audioBox.isChecked) {
+        btnMusic.setOnClickListener {
+            musicOn = if (!musicOn) {
                 audioPlayerMusic?.start()
-                audioBox.setTextColor(Color.BLACK)
+                btnMusic.setImageResource(R.mipmap.music_button_on)
+                true
             } else {
                 audioPlayerMusic?.pause()
-                audioBox.setTextColor(Color.WHITE)
+                btnMusic.setImageResource(R.mipmap.music_button_off)
+                false
             }
         }
 
@@ -54,7 +57,7 @@ class HomeActivity : FencyActivity() {
         audioPlayerEffects = MediaPlayer.create(this, R.raw.turn_page)
         audioPlayerMusic = MediaPlayer.create(this, R.raw.menu_theme)
         audioPlayerMusic!!.isLooping = true
-        if (audioBox.isChecked)
+        if (musicOn)
             audioPlayerMusic!!.start()
     }
 
