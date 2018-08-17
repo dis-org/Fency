@@ -319,17 +319,22 @@ class DuelModeActivity: FencyModeActivity(){
     }
 
     override fun updateGameView() { // do not call before onGo
+
+        scoreText.text = ludum!!.score1.toString()
+
         super.updateGameView()
 
-        //end of match
         when(ludum!!.state){
             R.integer.GAME_DRAW -> {
+                Toast.makeText(applicationContext, "draw!", Toast.LENGTH_SHORT).show()
             }
             R.integer.GAME_P1 -> {
                 scoreText.text = String.format(getString(R.string.score), ludum!!.score1, ludum!!.score2)
+                Toast.makeText(applicationContext, "p1!", Toast.LENGTH_SHORT).show()
             }
             R.integer.GAME_P2 -> {
                 scoreText.text = String.format(getString(R.string.score), ludum!!.score1, ludum!!.score2)
+                Toast.makeText(applicationContext, "p2!", Toast.LENGTH_SHORT).show()
             }
             R.integer.GAME_W1 -> {
                 resultText.setText(R.string.won)
