@@ -37,7 +37,7 @@ class Game(activity : FencyModeActivity, private val playerOne : Player, private
                 }
                 else -> throw Exception("invalid game state")
             }
-            activity.updateGameView()
+            activity.updateGameView(field)
         }
 
     fun score1(): Boolean {

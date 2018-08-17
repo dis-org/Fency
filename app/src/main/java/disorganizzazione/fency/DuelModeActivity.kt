@@ -337,13 +337,13 @@ class DuelModeActivity: FencyModeActivity(){
         }
     }
 
-    override fun updateGameView() { // do not call before onGo
+    override fun updateGameView(state: Int) { // do not call before onGo
 
         scoreText.text = ludum!!.score1.toString()
 
-        super.updateGameView()
+        super.updateGameView(state)
 
-        when(ludum!!.state){
+        when(state){
             R.integer.GAME_DRAW -> {
                 debug("game: draw")
             }

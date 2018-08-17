@@ -11,6 +11,6 @@
     <integer name="GAME_DRAW">0</integer>
     <integer name="GAME_P1">1</integer>
     <integer name="GAME_P2">2</integer>
-    <integer name="GAME_W1">11</integer>
-    <integer name="GAME_W2">22</integer>
+    <integer name="GAME_W1">3</integer>
+    <integer name="GAME_W2">4</integer>
 </resources>

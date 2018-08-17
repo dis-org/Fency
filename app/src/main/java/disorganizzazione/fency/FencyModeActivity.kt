@@ -56,8 +56,8 @@ abstract class FencyModeActivity: FencyActivity() {
         if (caller == usor) vibrate()
     }
 
-    open fun updateGameView() {
-        if (ludum!!.state == R.integer.GAME_DRAW) {
+    open fun updateGameView(state: Int) {
+        if (state == R.integer.GAME_DRAW) {
             vibrate()
         }
     }
