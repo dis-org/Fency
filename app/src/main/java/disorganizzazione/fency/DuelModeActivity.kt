@@ -142,8 +142,8 @@ class DuelModeActivity: FencyModeActivity(){
     }
 
     private fun findSomeone(){
-        append(R.string.scanning)
-
+        submit(R.string.scanning)
+        adveText.setText(R.string.dots)
         connectionsClient!!.startAdvertising(
                 signum, packageName, connectionLifecycleCallback,
                 AdvertisingOptions.Builder().setStrategy(STRATEGY).build())
@@ -152,18 +152,13 @@ class DuelModeActivity: FencyModeActivity(){
                 DiscoveryOptions.Builder().setStrategy(STRATEGY).build())
     }
 
-    private fun append(tag: Int) {
-        logMessage = "$logMessage${getText(tag)} "
-        displayLog()
-    }
-
     private fun submit(tag: Int) {
-        logMessage = "$logMessage\n${getText(tag)} "
+        logMessage = "$logMessage${getText(tag)}\n"
         displayLog()
     }
 
     private fun debug(msg: String) {
-        logMessage = "$logMessage\n$msg "
+        logMessage = "$logMessage$msg\n"
         displayLog()
     }
 
@@ -189,19 +184,16 @@ class DuelModeActivity: FencyModeActivity(){
             when (result.status.statusCode){
                 ConnectionsStatusCodes.STATUS_OK -> {
                     submit(R.string.connected)
-
                     disableButtons()
                     replaceMainFragment(GoFragment())
                 }
                 ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED -> {
                     submit(R.string.rejected)
-
-                    adveText.setText(R.string.dots)
                     findSomeone()
                 }
                 ConnectionsStatusCodes.STATUS_ERROR -> {
                     submit(R.string.connection_failed)
-                    //TODO
+                    findSomeone()
                 }
             }
         }
@@ -323,7 +315,17 @@ class DuelModeActivity: FencyModeActivity(){
                 }
             }
         }
-        override fun onPayloadTransferUpdate(endpointId: String, update: PayloadTransferUpdate) {}
+        override fun onPayloadTransferUpdate(endpointId: String, update: PayloadTransferUpdate) {
+            var msg = if(endpointId == opponentEndpointId) "out: " else "in: "
+            msg += when(update.status) {
+                PayloadTransferUpdate.Status.SUCCESS -> "success!"
+                PayloadTransferUpdate.Status.CANCELED -> "canceled"
+                PayloadTransferUpdate.Status.FAILURE -> "failure"
+                PayloadTransferUpdate.Status.IN_PROGRESS -> "..."
+                else -> "unexpected state"
+            }
+            debug(msg)
+        }
     }
 
     fun gameSync() {
@@ -338,8 +340,6 @@ class DuelModeActivity: FencyModeActivity(){
     }
 
     override fun updateGameView(state: Int) { // do not call before onGo
-
-        scoreText.text = ludum!!.score1.toString()
 
         super.updateGameView(state)
 
