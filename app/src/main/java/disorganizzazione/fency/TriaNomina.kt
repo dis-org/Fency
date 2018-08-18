@@ -172,7 +172,6 @@ class TriaNomina{
                 "Octavianus",
                 "Olympicus",
                 "Ovinus",
-                "Otho",
                 "Paetus",
                 "Pansa",
                 "Platipus",
