@@ -1,6 +1,5 @@
 package disorganizzazione.fency
 
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -15,7 +14,10 @@ abstract class FencyModeActivity: FencyActivity() {
     var ludum : Game? = null
         protected set
 
-    private val VIBRATION_LENGTH : Long = 100
+    private val VIBRATION_ONCE = longArrayOf(1, 100)
+    private val VIBRATION_TWICE = longArrayOf(1, 80, 40, 80)
+    private val VIBRATION_LONG = longArrayOf(1, 200)
+    private val VIBRATION_END = longArrayOf(1, 50, 20, 50, 20, 300)
     protected var vibrator : Vibrator? = null
     protected var vibrationEnabled:Boolean = true
 
@@ -65,13 +67,11 @@ abstract class FencyModeActivity: FencyActivity() {
 
     protected fun vibrate() {
         if (vibrationEnabled) {
-            var pattern = longArrayOf(1, VIBRATION_LENGTH)
-
-            when(ludum!!.state) {
-                R.integer.GAME_DRAW -> pattern = longArrayOf(1, VIBRATION_LENGTH)
-                R.integer.GAME_P1 -> pattern = longArrayOf(1, 80, 40, 80)
-                R.integer.GAME_P2 -> pattern = longArrayOf(1, 200)
-                R.integer.GAME_W1,R.integer.GAME_W2 -> pattern = longArrayOf(1, 50, 20, 50, 20, 300)
+            val pattern = when(ludum!!.state) {
+                R.integer.GAME_W1, R.integer.GAME_W2 -> VIBRATION_END
+                R.integer.GAME_P1 -> VIBRATION_TWICE
+                R.integer.GAME_P2 -> VIBRATION_LONG
+                else -> VIBRATION_ONCE
             }
             if (android.os.Build.VERSION.SDK_INT >= 26)
                 vibrator!!.vibrate(VibrationEffect.createWaveform(pattern, -1))
