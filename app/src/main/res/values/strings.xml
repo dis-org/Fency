@@ -27,19 +27,19 @@
     <string name="failure">Riprova</string>
     <!--Duel-->
     <string name="dots">. . . ?</string>
-    <string name="score">%1$i:%2$i</string>
     <string name="won">Hai vinto!</string>
     <string name="lost">Hai perso…</string>
     <string name="error_missing_permissions">Errore: permessi insufficienti per avviare la connessione.</string>
     <!--log-->
-    <string name="scanning">ricerca dispositivi…</string>
+    <string name="scanning">Ricerca dispositivi…</string>
     <string name="endpoint_found">dispositivo trovato, connessione…</string>
     <string name="endpoint_lost">dispositivo perso, ricerca…</string>
-    <string name="connected">connessione riuscita!</string>
-    <string name="disconnected">connessione persa</string>
-    <string name="rejected">connessione respinta, ricerca…</string>
-    <string name="connection_failed">connessione fallita, ricerca…</string>
     <string name="connection_pending">in attesa di conferma…</string>
-
-
+    <string name="connection_failed">connessione fallita.</string>
+    <string name="connection_rejected">connessione respinta.</string>
+    <string name="connected">connessione riuscita!</string>
+    <string name="disconnected">Connessione persa.</string>
+    <string name="payload_lost">Errore durante la trasmissione.</string>
+    <!--Game modes-->
+    <string name="upto5">Alla meglio di 5</string>
 </resources>

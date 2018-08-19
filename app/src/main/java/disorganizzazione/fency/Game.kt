@@ -8,7 +8,7 @@ class Game(activity : FencyModeActivity, private val playerOne : Player, private
         private set
     var score2 = 0
         private set
-    private var maxScore = Int.MAX_VALUE
+    var maxScore = Int.MAX_VALUE
 
     override var state: Int = R.integer.GAME_DRAW
         get() = super.state
@@ -20,14 +20,18 @@ class Game(activity : FencyModeActivity, private val playerOne : Player, private
                 R.integer.GAME_P1 -> {
                     field = R.integer.GAME_P1
                     score1++
-                    if (score1 >= maxScore) //we do want recursion
-                        state = R.integer.GAME_W1
+                    if (score1 >= maxScore) {
+                        activity.updateGameView(field)
+                        field = R.integer.GAME_W1
+                    }
                 }
                 R.integer.GAME_P2 -> {
                     field = R.integer.GAME_P2
                     score2++
-                    if (score2 >= maxScore) //we know what we are doing
-                        state = R.integer.GAME_W2
+                    if (score2 >= maxScore) {
+                        activity.updateGameView(field)
+                        field = R.integer.GAME_W2
+                    }
                 }
                 R.integer.GAME_W1 -> {
                     field = R.integer.GAME_W1
@@ -35,7 +39,7 @@ class Game(activity : FencyModeActivity, private val playerOne : Player, private
                 R.integer.GAME_W2 -> {
                     field = R.integer.GAME_W2
                 }
-                else -> throw Exception("invalid game state")
+                else -> throw Exception("Invalid game state.")
             }
             activity.updateGameView(field)
         }
