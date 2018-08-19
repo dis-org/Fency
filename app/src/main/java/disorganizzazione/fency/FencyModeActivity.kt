@@ -17,6 +17,7 @@ abstract class FencyModeActivity: FencyActivity() {
 
     private val VIBRATION_LENGTH : Long = 100
     protected var vibrator : Vibrator? = null
+    protected var vibrationEnabled:Boolean = true
 
     protected var sensorHandler: SensorHandler? = null
 
@@ -62,11 +63,20 @@ abstract class FencyModeActivity: FencyActivity() {
         }
     }
 
-    protected fun vibrate(){
-        @Suppress("DEPRECATION")
-        if(android.os.Build.VERSION.SDK_INT >= 26)
-            vibrator!!.vibrate(VibrationEffect.createOneShot(VIBRATION_LENGTH, VibrationEffect.DEFAULT_AMPLITUDE))
-        else
-            vibrator!!.vibrate(VIBRATION_LENGTH)
+    protected fun vibrate() {
+        if (vibrationEnabled) {
+            var pattern = longArrayOf(1, VIBRATION_LENGTH)
+
+            when(ludum!!.state) {
+                R.integer.GAME_DRAW -> pattern = longArrayOf(1, VIBRATION_LENGTH)
+                R.integer.GAME_P1 -> pattern = longArrayOf(1, 80, 40, 80)
+                R.integer.GAME_P2 -> pattern = longArrayOf(1, 200)
+                R.integer.GAME_W1,R.integer.GAME_W2 -> pattern = longArrayOf(1, 50, 20, 50, 20, 300)
+            }
+            if (android.os.Build.VERSION.SDK_INT >= 26)
+                vibrator!!.vibrate(VibrationEffect.createWaveform(pattern, -1))
+            else
+                @Suppress("DEPRECATION") vibrator!!.vibrate(pattern, -1)
+        }
     }
 }
