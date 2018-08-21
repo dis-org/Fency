@@ -52,24 +52,46 @@ class PracticeModeActivity: FencyModeActivity() {
 
     override fun updatePlayerView(caller: Player) {
 
-        val state = caller.state
-        val icon: ImageView? = when (caller) {
-            usor -> discipuli
-            adversator -> magistri
-            else -> null
-        }
+        var imageTag:Int = -1
+        var icon: ImageView? = null
 
+        if(caller == usor){
+            icon = discipuli
+
+            when (caller.state) {
+                R.integer.HIGH_STAND -> imageTag = R.mipmap.fency_high_stand
+                R.integer.LOW_STAND -> imageTag = R.mipmap.fency_low_stand
+                R.integer.HIGH_ATTACK -> {
+                    imageTag = R.mipmap.fency_high_attack
+                    if (adversator!!.state == R.integer.HIGH_STAND)
+                        ludum!!.state = R.integer.GAME_DRAW
+                    else
+                        ludum!!.state = R.integer.GAME_P1
+                }
+                R.integer.LOW_ATTACK -> {
+                    imageTag = R.mipmap.fency_low_attack
+                    if (adversator!!.state == R.integer.LOW_STAND)
+                        ludum!!.state = R.integer.GAME_DRAW
+                    else
+                        ludum!!.state = R.integer.GAME_P1
+                }
+                R.integer.INVALID -> {
+                    icon!!.imageAlpha = 80
+                    return
+                }
+            }
+        }
+        else if (caller == adversator){
+            icon = magistri
+
+            when (caller.state) {
+                R.integer.HIGH_STAND -> imageTag = R.mipmap.fency_dummy_high
+                R.integer.LOW_STAND -> imageTag = R.mipmap.fency_dummy_low
+            }
+        }
         icon!!.imageAlpha = 255
 
-        //change player img
-        when (state) {
-            R.integer.HIGH_STAND -> icon.setImageResource(R.mipmap.fency_high_stand)
-            R.integer.LOW_STAND -> icon.setImageResource(R.mipmap.fency_low_stand)
-            R.integer.HIGH_ATTACK -> icon.setImageResource(R.mipmap.fency_high_attack)
-            R.integer.LOW_ATTACK -> icon.setImageResource(R.mipmap.fency_low_attack)
-            R.integer.INVALID -> icon.imageAlpha = 80
-        }
-
+        icon.setImageResource(imageTag)
     }
 
      override fun updateGameView(state: Int) {

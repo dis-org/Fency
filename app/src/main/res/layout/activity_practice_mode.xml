@@ -7,22 +7,6 @@
     android:background="@mipmap/img_fency_mainmenubackground"
     tools:context="disorganizzazione.fency.PracticeModeActivity">
 
-    <ImageView
-        android:id="@+id/ivOpponentState"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/ivPlayerState"
-        android:layout_marginEnd="50dp"
-        android:scaleX="-1"
-        android:src="@mipmap/fency_low_stand"
-        tools:layout_conversion_absoluteHeight="140dp"
-        tools:layout_conversion_absoluteWidth="164dp"
-        tools:layout_conversion_absoluteX="151dp"
-        tools:layout_conversion_absoluteY="307dp"
-        tools:layout_editor_absoluteX="151dp"
-        tools:layout_editor_absoluteY="307dp" />
-
     <TextView
         android:id="@+id/tvCommand"
         android:layout_width="match_parent"
@@ -67,10 +51,9 @@
         android:id="@+id/ivPlayerState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/tvCheck"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="64dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="119dp"
         android:src="@mipmap/fency_low_stand"
         tools:layout_conversion_absoluteHeight="140dp"
         tools:layout_conversion_absoluteWidth="164dp"
@@ -78,6 +61,17 @@
         tools:layout_conversion_absoluteY="307dp"
         tools:layout_editor_absoluteX="54dp"
         tools:layout_editor_absoluteY="307dp" />
+
+    <ImageView
+        android:id="@+id/ivOpponentState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/ivPlayerState"
+        android:layout_alignStart="@id/ivPlayerState"
+        android:src="@mipmap/fency_dummy_low"
+        tools:layout_conversion_absoluteHeight="140dp"
+        tools:layout_conversion_absoluteWidth="164dp" />
 
     <TextView
         android:id="@+id/tvCombo"

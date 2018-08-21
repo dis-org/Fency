@@ -1,7 +1,5 @@
 package disorganizzazione.fency
 
-import kotlin.math.max
-
 class Game(activity : FencyModeActivity, private val playerOne : Player, private val playerTwo : Player) : FencyModel(activity,R.integer.GAME_DRAW) {
 
     var score1 = 0
