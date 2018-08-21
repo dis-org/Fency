@@ -62,7 +62,6 @@ class TutorialModeActivity: FencyModeActivity() {
     }
 
     override fun updatePlayerView(caller: Player) {
-        super.updatePlayerView(caller)
         if (caller == usor){
 
             // Reset every ImageView and TextView
@@ -83,6 +82,8 @@ class TutorialModeActivity: FencyModeActivity() {
             var adve_icon: ImageView? = null
             var state_tv: TextView? = null
 
+            var gameState = -1
+
             var new_adve_state = -1
             val state = caller.state
 
@@ -96,24 +97,32 @@ class TutorialModeActivity: FencyModeActivity() {
                     adve_icon = adve_h_a
                     state_tv = tv_h_g
                     new_adve_state = R.integer.HIGH_ATTACK
+                    gameState = R.integer.GAME_DRAW
+                    audioPlayerEffects!!.start()
                 }
                 R.integer.LOW_STAND -> {
                     usor_icon = usor_l_g
                     adve_icon = adve_l_a
                     state_tv = tv_l_g
                     new_adve_state = R.integer.LOW_ATTACK
+                    gameState = R.integer.GAME_DRAW
+                    audioPlayerEffects!!.start()
                 }
                 R.integer.HIGH_ATTACK -> {
                     usor_icon = usor_h_a
                     adve_icon = adve_l_g
                     state_tv = tv_h_a
                     new_adve_state = R.integer.LOW_STAND
+                    gameState = R.integer.GAME_P1
+                    audioPlayerMusic!!.start()
                 }
                 R.integer.LOW_ATTACK -> {
                     usor_icon = usor_l_a
                     adve_icon = adve_h_g
                     state_tv = tv_l_a
                     new_adve_state = R.integer.HIGH_STAND
+                    gameState = R.integer.GAME_P1
+                    audioPlayerMusic!!.start()
                 }
             }
             usor_mid!!.setImageResource(R.mipmap.img_fency_tutorial_middle)
@@ -122,8 +131,9 @@ class TutorialModeActivity: FencyModeActivity() {
             state_tv!!.alpha = usor_active_alpha
 
             // Allow adversator change state only if necessary
-            // This makes the device vibrate just once
             adversator!!.state = new_adve_state
+
+            ludum!!.state = gameState
         }
     }
 }

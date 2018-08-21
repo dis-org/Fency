@@ -8,4 +8,5 @@
     <dimen name="tutorial_guard_margin">28dp</dimen>
     <dimen name="tutorial_attack_margin">20dp</dimen>
     <dimen name="tutorial_label_margin">32dp</dimen>
+    <dimen name="tutorial_horizontal_margin">32dp</dimen>
 </resources>

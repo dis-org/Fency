@@ -282,7 +282,6 @@ class DuelModeActivity: FencyModeActivity(){
     }
 
     override fun updatePlayerView(caller: Player) {
-        super.updatePlayerView(caller)
         val status: Int = caller.state
         if(caller == usor) {
             if (status == R.integer.HIGH_ATTACK ){
