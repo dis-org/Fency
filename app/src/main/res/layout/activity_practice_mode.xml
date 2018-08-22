@@ -49,8 +49,8 @@
 
     <ImageView
         android:id="@+id/ivPlayerState"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="191dp"
+        android:layout_height="162dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="119dp"
@@ -64,11 +64,12 @@
 
     <ImageView
         android:id="@+id/ivOpponentState"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="287dp"
+        android:layout_height="161dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/ivPlayerState"
         android:layout_alignStart="@id/ivPlayerState"
+        android:layout_alignTop="@+id/ivPlayerState"
+        android:layout_marginEnd="0dp"
         android:src="@mipmap/fency_dummy_low"
         tools:layout_conversion_absoluteHeight="140dp"
         tools:layout_conversion_absoluteWidth="164dp" />
@@ -79,7 +80,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="50dp"
+        android:text="0"
         android:textAlignment="center"
         android:textSize="36sp" />
 

@@ -1,12 +1,14 @@
 package disorganizzazione.fency
 
 import android.os.Handler
+import java.util.*
 
 class DummyHandler(context: PracticeModeActivity, player: Player) : FencyHandler(context as FencyModeActivity, player) {
 
     private val ANIMATION_TIME = 700L
     private val NUMBER_OF_STATES = 2
-    private var state: Int = 0
+    private var state: Int = 1
+    private val random: Random = Random()
     private val handler: Handler = Handler()
     private var runnable: Runnable? = null
     var combo: Int = 0
@@ -16,7 +18,7 @@ class DummyHandler(context: PracticeModeActivity, player: Player) : FencyHandler
 
         if (success) {
             combo++
-            state = (state + 1) % NUMBER_OF_STATES
+            state = random.nextInt(NUMBER_OF_STATES) % this.NUMBER_OF_STATES
         } else {
             combo = 0
         }

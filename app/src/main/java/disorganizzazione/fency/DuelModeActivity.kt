@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
 import android.support.annotation.CallSuper
 import android.support.v4.content.ContextCompat
 import android.view.View
@@ -276,7 +277,7 @@ class DuelModeActivity: FencyModeActivity(){
         sensorHandler!!.registerListeners()
     }
 
-    fun gameRestart() {
+    fun gameRestart() { //TODO: gameStart() dovrebbe essere chiamato solo se entrambi i dispositivi hanno dato conferma
         ludum!!.reset()
         gameStart()
     }
@@ -368,9 +369,9 @@ class DuelModeActivity: FencyModeActivity(){
                 gameEnd()
             }
             R.integer.GAME_W2 -> {
-                debug("game: w1")
+                debug("game: w2")
                 resultText.setText(R.string.lost)
-                gameEnd()
+                Handler().postDelayed({ runOnUiThread { gameEnd()} }, 500) //TODO: per evitare il runnable sarebbe necessario chiamare showButtons() dopo che il Log è apparso
             }
         }
     }
