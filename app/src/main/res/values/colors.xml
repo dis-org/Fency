@@ -6,4 +6,8 @@
     <color name="opponent_filter">#d73535</color>
     <color name="black_overlay">#66000000</color>
     <color name="brown_ink">#f3110901</color>
+    <!-- Duel background's tints -->
+    <color name="color_P1">#00aeff</color>
+    <color name="color_P2">#4b0005</color>
+    <color name="color_DRAW">#ffffff</color>
 </resources>

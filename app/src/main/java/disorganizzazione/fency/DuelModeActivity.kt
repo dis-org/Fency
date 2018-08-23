@@ -22,6 +22,8 @@ import kotlinx.android.synthetic.main.activity_duel_mode.*
 
 class DuelModeActivity: FencyModeActivity(){
 
+    private var opponentIsReady = false
+
     companion object {
         private const val REQUEST_CODE_REQUIRED_PERMISSIONS = 1
         private val REQUIRED_PERMISSIONS = arrayOf(
@@ -37,6 +39,9 @@ class DuelModeActivity: FencyModeActivity(){
         private const val L_A_BYTE = 1.toByte()
         private const val DRAW_BYTE = 2.toByte()
         private const val SCORE_BYTE = 3.toByte()
+        private const val AYR_BYTE = 4.toByte()
+        private const val IAR_BYTE = 5.toByte()
+        private const val SURRENDER_BYTE = 6.toByte()
 
         /** Returns true if the app was granted all the permissions. Otherwise, returns false.  */
         private fun hasPermissions(context: Context, vararg permissions: String): Boolean {
@@ -246,11 +251,22 @@ class DuelModeActivity: FencyModeActivity(){
             }
             "replay" -> {
                 cancelBtn.setOnClickListener {
+                    sendPayload(SURRENDER_BYTE)
+                    debug("out: I leave")
                     reset()
                     findSomeone()
                 }
                 acceptBtn.setOnClickListener {
-                    gameRestart()
+                    disableButtons()
+                    if (opponentIsReady){
+                        sendPayload(IAR_BYTE)
+                        gameRestart()
+                        debug("out: replay!")
+                    }
+                    else {
+                        sendPayload(AYR_BYTE)
+                        debug("out: replay?")
+                    }
                 }
             }
         }
@@ -277,7 +293,10 @@ class DuelModeActivity: FencyModeActivity(){
         sensorHandler!!.registerListeners()
     }
 
-    fun gameRestart() { //TODO: gameStart() dovrebbe essere chiamato solo se entrambi i dispositivi hanno dato conferma
+    fun gameRestart() {
+
+        opponentIsReady = false
+
         ludum!!.reset()
         gameStart()
     }
@@ -324,6 +343,21 @@ class DuelModeActivity: FencyModeActivity(){
                     debug("in: score")
                     ludum!!.state = R.integer.GAME_P1
                 }
+                //restart match
+                AYR_BYTE -> { //TODO: handle the "deadlock" when both players press the button before AYR payload's arrived
+                    //debug("in: replay?")
+                    opponentIsReady = true
+                }
+                IAR_BYTE -> {
+                    debug("in: replay!")
+                    gameRestart()
+                }
+                SURRENDER_BYTE -> {
+                    debug("in: I leave")
+                    opponentIsReady = false
+                    reset()
+                    findSomeone()
+                }
             }
         }
         override fun onPayloadTransferUpdate(endpointId: String, update: PayloadTransferUpdate) {
@@ -353,13 +387,16 @@ class DuelModeActivity: FencyModeActivity(){
 
         when(state){
             R.integer.GAME_DRAW -> {
+                flashBackground(R.mipmap.img_fency_background_draw)
                 debug("game: draw")
             }
             R.integer.GAME_P1 -> {
+                flashBackground(R.mipmap.img_fency_background_p1)
                 scoreText.text = ludum!!.toString()
                 debug("game: p1")
             }
             R.integer.GAME_P2 -> {
+                flashBackground(R.mipmap.img_fency_background_p2)
                 scoreText.text = ludum!!.toString()
                 debug("game: p2")
             }
@@ -371,9 +408,14 @@ class DuelModeActivity: FencyModeActivity(){
             R.integer.GAME_W2 -> {
                 debug("game: w2")
                 resultText.setText(R.string.lost)
-                Handler().postDelayed({ runOnUiThread { gameEnd()} }, 500) //TODO: per evitare il runnable sarebbe necessario chiamare showButtons() dopo che il Log è apparso
+                Handler().postDelayed({ runOnUiThread { gameEnd()} }, 500) //per evitare l'uso del thread sarebbe necessario chiamare showButtons() dopo che il Log è apparso
             }
         }
+    }
+
+    private fun flashBackground(backgroundTag : Int){
+        fullscreen_content.setBackgroundResource(backgroundTag)
+        Handler().postDelayed({ runOnUiThread { fullscreen_content.setBackgroundResource(R.mipmap.img_fency_mainmenubackground)} }, 800)
     }
 
     private fun gameEnd(){

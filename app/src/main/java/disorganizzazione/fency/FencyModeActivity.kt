@@ -14,10 +14,10 @@ abstract class FencyModeActivity: FencyActivity() {
     var ludum : Game? = null
         protected set
 
-    private val VIBRATION_LIGHT = longArrayOf(1,80)
-    private val VIBRATION_ONCE = longArrayOf(1, 150)
-    private val VIBRATION_TWICE = longArrayOf(1, 100, 40, 100)
-    private val VIBRATION_LONG = longArrayOf(1, 240)
+    private val VIBRATION_LIGHT = longArrayOf(1,100)
+    private val VIBRATION_ONCE = longArrayOf(1, 180)
+    private val VIBRATION_TWICE = longArrayOf(1, 150, 50, 150)
+    private val VIBRATION_LONG = longArrayOf(1, 280)
     private val VIBRATION_END = longArrayOf(1, 300, 50, 300, 50, 1000)
     protected var vibrator : Vibrator? = null
     protected var vibrationEnabled:Boolean = true
@@ -65,10 +65,10 @@ abstract class FencyModeActivity: FencyActivity() {
     protected fun vibrate(state:Int) {
         if (vibrationEnabled) {
             val pattern = when(state) {
-                R.integer.GAME_W1, R.integer.GAME_W2 -> VIBRATION_END
+                R.integer.GAME_DRAW -> VIBRATION_ONCE
                 R.integer.GAME_P1 -> VIBRATION_TWICE
                 R.integer.GAME_P2 -> VIBRATION_LONG
-                R.integer.GAME_DRAW -> VIBRATION_ONCE
+                R.integer.GAME_W1, R.integer.GAME_W2 -> VIBRATION_END
                 else -> VIBRATION_LIGHT
             }
             if (android.os.Build.VERSION.SDK_INT >= 26)
